@@ -3,67 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f6f8fc" />
+  <meta name="theme-color" content="#f7f9fd" />
   <title>전례 봉사 일정</title>
-  <meta name="description" content="해설, 독서, 반주, 드럼 봉사 일정을 확인하고 관리합니다." />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <main class="page-shell">
-    <header class="site-header">
-      <div class="site-brand" aria-label="Parish roster">
-        <span class="brand-mark">✝</span>
-        <span class="brand-text">parish</span>
+    <header class="topbar">
+      <div>
+        <h1>전례 봉사 일정</h1>
+        <p id="updatedText" class="updated-text">일정을 불러오는 중입니다.</p>
       </div>
       <div class="header-actions">
-        <button id="editButton" class="button button-primary" type="button">일정 수정</button>
+        <button id="editButton" class="button button-primary" type="button">수정</button>
         <button id="saveButton" class="button button-primary hidden" type="button">저장</button>
         <button id="cancelButton" class="button button-secondary hidden" type="button">취소</button>
       </div>
     </header>
 
-    <section class="hero-panel" aria-labelledby="heroTitle">
-      <div class="hero-copy-wrap">
-        <p class="eyebrow">PARISH SERVICE ROSTER</p>
-        <h1 id="heroTitle">전례 봉사 일정,<br />더 쉽게 확인하고 수정합니다</h1>
-        <p class="hero-copy">
-          해설, 1독서, 2독서, 반주, 드럼 일정을 한 화면에서 확인할 수 있습니다.
-          지난 일정은 완료로 표시되고, 빈칸은 앞으로 채워질 예정입니다.
-        </p>
-        <div class="hero-meta-row">
-          <span class="meta-pill"><i class="meta-dot meta-dot-past" aria-hidden="true"></i>완료</span>
-          <span class="meta-pill"><i class="meta-dot meta-dot-today" aria-hidden="true"></i>오늘</span>
-          <span class="meta-pill"><i class="meta-dot meta-dot-future" aria-hidden="true"></i>예정</span>
-        </div>
-      </div>
-
-      <aside class="hero-side-card" aria-labelledby="nextScheduleHeading">
-        <p class="side-label">NEXT SCHEDULE</p>
-        <h2 id="nextScheduleHeading">가장 가까운 일정</h2>
-        <p id="nextScheduleDate" class="next-schedule-date">불러오는 중</p>
-        <dl class="next-schedule-grid">
-          <div>
-            <dt>상태</dt>
-            <dd id="nextScheduleStatus">-</dd>
-          </div>
-          <div>
-            <dt>배정</dt>
-            <dd id="nextScheduleAssigned">-</dd>
-          </div>
-        </dl>
-        <p id="updatedText" class="updated-text">일정을 불러오는 중입니다.</p>
-      </aside>
-    </section>
-
     <section class="schedule-card" aria-labelledby="scheduleHeading">
-      <div class="schedule-card-head">
-        <div>
-          <p class="section-kicker">SCHEDULE TABLE</p>
-          <h2 id="scheduleHeading">2026년 전례 봉사 일정</h2>
-        </div>
-        <p class="schedule-note">글자 가독성을 높이기 위해 간격과 대비를 정리했습니다.</p>
-      </div>
-
+      <h2 id="scheduleHeading" class="visually-hidden">2026년 전례 봉사 일정</h2>
       <div class="table-scroll">
         <table>
           <thead>
@@ -87,11 +46,7 @@
   <dialog id="passwordDialog" class="password-dialog">
     <form id="passwordForm" method="dialog" class="password-card">
       <div class="dialog-title-row">
-        <div>
-          <p class="eyebrow">EDIT MODE</p>
-          <h2>일정 수정</h2>
-          <p class="dialog-copy">비밀번호를 입력하면 웹에서 바로 수정할 수 있습니다.</p>
-        </div>
+        <h2>일정 수정</h2>
         <button id="dialogClose" class="icon-button" type="button" aria-label="닫기">×</button>
       </div>
       <label for="passwordInput">비밀번호</label>
