@@ -192,13 +192,40 @@
       border-left:2px solid var(--line-strong)!important;
     }
 
-    .attendance-cell{min-width:52px}
-    .mark{
-      font-weight:800;
-      color:var(--text);
+    .attendance-cell{
+      min-width:52px;
+      padding:0;
     }
 
-    .text-input,.mark-input{
+    .attendance-cell.state-green{
+      background:#57c979;
+    }
+
+    .attendance-cell.state-yellow{
+      background:#f3d45f;
+    }
+
+    .attendance-cell.state-white{
+      background:#fff;
+    }
+
+    .attendance-toggle{
+      width:100%;
+      height:100%;
+      min-height:47px;
+      border:0;
+      padding:0;
+      background:transparent;
+      cursor:pointer;
+      display:block;
+    }
+
+    .attendance-toggle:focus-visible{
+      outline:3px solid rgba(47,118,243,.28);
+      outline-offset:-3px;
+    }
+
+    .text-input{
       width:100%;
       min-height:34px;
       border:1px solid var(--line-strong);
@@ -212,10 +239,6 @@
     .text-input{
       padding:5px 6px;
       text-align:left;
-    }
-
-    .mark-input{
-      padding:4px 2px;
     }
 
     .status{
@@ -319,9 +342,13 @@
         min-width:84px;
       }
       .date-head,.attendance-cell{min-width:46px}
-      .text-input,.mark-input{
+      .text-input{
         min-height:31px;
         font-size:.74rem;
+      }
+
+      .attendance-toggle{
+        min-height:43px;
       }
       .status{
         padding:0 10px;
@@ -434,11 +461,17 @@
         const marks = row.attendance.map((value, dateIndex) => {
           const m = month(state.data.dates[dateIndex]);
           const prev = dateIndex ? month(state.data.dates[dateIndex - 1]) : null;
-          const cls = m !== prev ? "attendance-cell month-start" : "attendance-cell";
+          const stateValue = value === "green" || value === "yellow" ? value : "";
+          const colorClass = stateValue ? `state-${stateValue}` : "state-white";
+          const monthClass = m !== prev ? " month-start" : "";
+          const cls = `attendance-cell ${colorClass}${monthClass}`;
+
           if (state.editing) {
-            return `<td class="${cls}"><input class="mark-input" data-row="${rowIndex}" data-date="${dateIndex}" value="${esc(value)}" maxlength="6"></td>`;
+            const stateLabel = stateValue === "green" ? "초록" : stateValue === "yellow" ? "노랑" : "흰색";
+            return `<td class="${cls}"><button type="button" class="attendance-toggle" data-row="${rowIndex}" data-date="${dateIndex}" aria-label="${row.name || row.number} ${shortDate(state.data.dates[dateIndex])} 출결 ${stateLabel}"></button></td>`;
           }
-          return `<td class="${cls}"><span class="mark">${esc(value)}</span></td>`;
+
+          return `<td class="${cls}" aria-label="${stateValue === "green" ? "초록" : stateValue === "yellow" ? "노랑" : "미표시"}"></td>`;
         }).join("");
 
         return `<tr>
@@ -565,15 +598,21 @@
       if (text) {
         const row = Number(text.dataset.row);
         state.data.rows[row][text.dataset.kind] = text.value;
-        return;
       }
+    });
 
-      const mark = e.target.closest(".mark-input");
-      if (mark) {
-        const row = Number(mark.dataset.row);
-        const date = Number(mark.dataset.date);
-        state.data.rows[row].attendance[date] = mark.value;
-      }
+    body.addEventListener("click", e => {
+      if (!state.editing) return;
+
+      const toggle = e.target.closest(".attendance-toggle");
+      if (!toggle) return;
+
+      const row = Number(toggle.dataset.row);
+      const date = Number(toggle.dataset.date);
+      const current = state.data.rows[row].attendance[date];
+      const next = current === "" ? "green" : current === "green" ? "yellow" : "";
+      state.data.rows[row].attendance[date] = next;
+      render();
     });
 
     cancelButton.addEventListener("click", () => {
