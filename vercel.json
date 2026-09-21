@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/schedule.js": {
-      "runtime": "nodejs22.x"
-    }
-  },
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
