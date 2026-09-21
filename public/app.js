@@ -3,8 +3,7 @@ const state = {
   original: null,
   editing: false,
   password: "",
-  serverAvailable: false,
-  localMode: false
+  serverAvailable: false
 };
 
 const body = document.getElementById("scheduleBody");
@@ -13,9 +12,6 @@ const saveButton = document.getElementById("saveButton");
 const cancelButton = document.getElementById("cancelButton");
 const statusMessage = document.getElementById("statusMessage");
 const updatedText = document.getElementById("updatedText");
-const nextScheduleDate = document.getElementById("nextScheduleDate");
-const nextScheduleStatus = document.getElementById("nextScheduleStatus");
-const nextScheduleAssigned = document.getElementById("nextScheduleAssigned");
 const passwordDialog = document.getElementById("passwordDialog");
 const passwordForm = document.getElementById("passwordForm");
 const passwordInput = document.getElementById("passwordInput");
@@ -54,56 +50,14 @@ function formatDate(date) {
   return `${Number(month)}/${Number(day)}`;
 }
 
-function formatLongDate(date) {
-  try {
-    return new Intl.DateTimeFormat("ko-KR", {
-      timeZone: "Asia/Seoul",
-      month: "long",
-      day: "numeric",
-      weekday: "long"
-    }).format(new Date(`${date}T12:00:00+09:00`));
-  } catch {
-    return formatDate(date);
-  }
-}
-
 function escapeText(value) {
   return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#039;"
   })[ch]);
-}
-
-function assignedCount(row) {
-  return fields.reduce((count, field) => count + ((row[field] || "").trim() ? 1 : 0), 0);
-}
-
-function findNextRow(rows) {
-  const today = kstTodayISO();
-  return rows.find(row => row.date >= today) || null;
-}
-
-function updateNextSchedulePanel() {
-  if (!state.schedule?.rows?.length) {
-    nextScheduleDate.textContent = "일정 없음";
-    nextScheduleStatus.textContent = "-";
-    nextScheduleAssigned.textContent = "-";
-    return;
-  }
-
-  const nextRow = findNextRow(state.schedule.rows);
-  if (!nextRow) {
-    nextScheduleDate.textContent = "향후 일정 없음";
-    nextScheduleStatus.textContent = "완료";
-    nextScheduleAssigned.textContent = `0 / ${fields.length}`;
-    return;
-  }
-
-  const status = rowStatus(nextRow.date);
-  const assigned = assignedCount(nextRow);
-
-  nextScheduleDate.textContent = formatLongDate(nextRow.date);
-  nextScheduleStatus.textContent = status === "today" ? "오늘" : "예정";
-  nextScheduleAssigned.textContent = `${assigned} / ${fields.length}`;
 }
 
 function render() {
@@ -134,18 +88,17 @@ function render() {
 
   if (state.schedule.updatedAt) {
     const dt = new Date(state.schedule.updatedAt);
-    const formatted = new Intl.DateTimeFormat("ko-KR", {
+    updatedText.textContent = new Intl.DateTimeFormat("ko-KR", {
       timeZone: "Asia/Seoul",
-      year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit"
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
     }).format(dt);
-    updatedText.textContent = state.localMode
-      ? `GitHub Pages · 기준 데이터 ${formatted}`
-      : `마지막 수정 ${formatted}`;
   } else {
-    updatedText.textContent = state.localMode ? "GitHub Pages · 읽기 전용" : "초기 일정";
+    updatedText.textContent = "";
   }
-
-  updateNextSchedulePanel();
 }
 
 function setStatus(message, type = "") {
@@ -159,14 +112,11 @@ async function loadSchedule() {
     if (!response.ok) throw new Error("server_unavailable");
     state.schedule = await response.json();
     state.serverAvailable = true;
-    state.localMode = false;
     state.original = structuredClone(state.schedule);
     render();
-    setStatus("");
     return;
   } catch (_) {
     state.serverAvailable = false;
-    state.localMode = true;
   }
 
   try {
@@ -175,13 +125,8 @@ async function loadSchedule() {
     state.schedule = await response.json();
     state.original = structuredClone(state.schedule);
     render();
-    setStatus("");
   } catch {
-    setStatus("일정을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.", "error");
-    updatedText.textContent = "불러오기 실패";
-    nextScheduleDate.textContent = "불러오기 실패";
-    nextScheduleStatus.textContent = "-";
-    nextScheduleAssigned.textContent = "-";
+    setStatus("일정을 불러오지 못했습니다.", "error");
   }
 }
 
@@ -194,13 +139,13 @@ editButton.addEventListener("click", () => {
 
 dialogClose.addEventListener("click", () => passwordDialog.close());
 
-passwordForm.addEventListener("submit", async (event) => {
+passwordForm.addEventListener("submit", async event => {
   event.preventDefault();
   const password = passwordInput.value;
   passwordError.textContent = "";
 
   if (!state.serverAvailable) {
-    passwordError.textContent = "현재 GitHub Pages는 읽기 전용입니다. 서버 배포 주소에서 수정할 수 있습니다.";
+    passwordError.textContent = "현재 배포에서는 수정 기능을 사용할 수 없습니다.";
     return;
   }
 
@@ -210,6 +155,7 @@ passwordForm.addEventListener("submit", async (event) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "verify", password })
     });
+
     if (response.status === 401) {
       passwordError.textContent = "비밀번호가 맞지 않습니다.";
       return;
@@ -221,19 +167,17 @@ passwordForm.addEventListener("submit", async (event) => {
     state.original = structuredClone(state.schedule);
     passwordDialog.close();
     render();
-    setStatus("수정 모드입니다. 변경 후 저장을 눌러 주세요.");
   } catch {
     passwordError.textContent = "인증 중 오류가 발생했습니다.";
   }
 });
 
-body.addEventListener("input", (event) => {
+body.addEventListener("input", event => {
   const input = event.target.closest(".cell-input");
   if (!input || !state.editing) return;
   const rowIndex = Number(input.dataset.row);
   const field = input.dataset.field;
   state.schedule.rows[rowIndex][field] = input.value.trimStart();
-  updateNextSchedulePanel();
 });
 
 cancelButton.addEventListener("click", () => {
@@ -241,13 +185,11 @@ cancelButton.addEventListener("click", () => {
   state.editing = false;
   state.password = "";
   render();
-  setStatus("변경 내용을 취소했습니다.");
 });
 
 saveButton.addEventListener("click", async () => {
   saveButton.disabled = true;
   cancelButton.disabled = true;
-  setStatus("저장 중입니다.");
 
   const cleanedRows = state.schedule.rows.map(row => {
     const next = { ...row };
@@ -270,22 +212,20 @@ saveButton.addEventListener("click", async () => {
       state.editing = false;
       state.password = "";
       render();
-      setStatus("인증이 만료되었습니다. 다시 일정 수정 버튼을 눌러 주세요.", "error");
+      setStatus("다시 로그인해 주세요.", "error");
       return;
     }
-    if (!response.ok) {
-      const detail = await response.json().catch(() => ({}));
-      throw new Error(detail.error || "save_failed");
-    }
+
+    if (!response.ok) throw new Error("save_failed");
 
     state.schedule = await response.json();
     state.original = structuredClone(state.schedule);
     state.editing = false;
     state.password = "";
     render();
-    setStatus("일정을 저장했습니다.", "success");
+    setStatus("저장했습니다.", "success");
   } catch {
-    setStatus("저장하지 못했습니다. 네트워크 상태를 확인하고 다시 시도해 주세요.", "error");
+    setStatus("저장하지 못했습니다.", "error");
   } finally {
     saveButton.disabled = false;
     cancelButton.disabled = false;
