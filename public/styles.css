@@ -109,14 +109,15 @@ h1 {
 }
 
 .table-scroll {
-  overflow-x: auto;
+  overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 table {
   width: 100%;
   min-width: 720px;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   table-layout: fixed;
   font-variant-numeric: tabular-nums;
 }
@@ -130,6 +131,9 @@ td {
 }
 
 th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   color: #65718c;
   background: var(--surface-soft);
   font-size: 0.88rem;
@@ -146,6 +150,7 @@ tbody tr:last-child td { border-bottom: 0; }
 td {
   height: 60px;
   color: var(--text);
+  background: #fff;
   font-size: 1rem;
   font-weight: 600;
 }
@@ -157,10 +162,6 @@ tr.past td {
 
 tr.today td {
   background: #eef5ff;
-}
-
-tr.future td {
-  background: #fff;
 }
 
 .date-cell {
@@ -301,33 +302,181 @@ tr.future td {
   border: 0;
 }
 
+/* Mobile-first schedule view: all 6 columns always visible. */
 @media (max-width: 700px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
   .page-shell {
-    width: min(100% - 18px, 1040px);
-    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    padding: 10px 8px 8px;
   }
 
   .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 14px;
+    flex: 0 0 auto;
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  .topbar > div:first-child {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  h1 {
+    font-size: 1.38rem;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+  }
+
+  .updated-text {
+    margin-top: 3px;
+    min-height: 12px;
+    font-size: 0.64rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .header-actions {
-    width: 100%;
+    gap: 5px;
   }
 
-  .header-actions .button {
-    flex: 1;
+  .button {
+    min-height: 36px;
+    padding: 0 11px;
+    border-radius: 8px;
+    font-size: 0.8rem;
   }
 
   .schedule-card {
-    border-radius: 14px;
+    flex: 1 1 auto;
+    min-height: 0;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(54, 84, 138, 0.06);
+  }
+
+  .table-scroll {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
   }
 
   th,
   td {
-    padding: 13px 10px;
+    padding: 11px 2px;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+
+  th {
+    top: 0;
+    height: 42px;
+    background: #f6f9ff;
+    box-shadow: 0 1px 0 var(--line);
+    font-size: 0.72rem;
+    letter-spacing: -0.02em;
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 15%;
+  }
+
+  th:not(:first-child),
+  td:not(:first-child) {
+    width: 17%;
+  }
+
+  td {
+    height: 54px;
+    font-size: 0.82rem;
+    font-weight: 650;
+  }
+
+  .date-cell {
+    padding-left: 2px;
+    text-align: center;
+  }
+
+  .date-line {
+    justify-content: center;
+    gap: 3px;
+    font-size: 0.78rem;
+  }
+
+  .row-dot {
+    display: none;
+  }
+
+  .empty-cell {
+    font-size: 0.74rem;
+  }
+
+  .cell-input {
+    min-height: 34px;
+    padding: 5px 1px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+  }
+
+  .status-message {
+    flex: 0 0 auto;
+    min-height: 0;
+    margin: 5px 2px 0;
+    font-size: 0.72rem;
+  }
+
+  .password-dialog {
+    width: calc(100% - 24px);
+    border-radius: 14px;
+  }
+
+  .password-card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 370px) {
+  h1 { font-size: 1.24rem; }
+
+  .button {
+    min-height: 34px;
+    padding: 0 9px;
+    font-size: 0.75rem;
+  }
+
+  th {
+    font-size: 0.66rem;
+  }
+
+  td {
+    font-size: 0.76rem;
+  }
+
+  .date-line,
+  .empty-cell {
+    font-size: 0.7rem;
   }
 }
 
