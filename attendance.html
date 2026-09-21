@@ -7,215 +7,326 @@
   <title>출석부</title>
   <style>
     :root {
-      --bg: #f7f9fd;
-      --surface: #ffffff;
-      --surface-soft: #f8faff;
-      --text: #17223f;
-      --muted: #74809a;
-      --line: #dbe3f0;
-      --line-strong: #bccbe2;
-      --accent: #2f76f3;
-      --shadow: 0 14px 36px rgba(54, 84, 138, 0.08);
+      --bg:#f7f9fd;
+      --surface:#fff;
+      --soft:#f8faff;
+      --text:#17223f;
+      --muted:#74809a;
+      --line:#dbe3f0;
+      --line-strong:#bccbe2;
+      --accent:#2f76f3;
+      --accent-hover:#2466d7;
+      --error:#b93b46;
+      --success:#24844f;
+      --shadow:0 14px 36px rgba(54,84,138,.08);
     }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-      min-height: 100vh;
-      color: var(--text);
-      background: var(--bg);
-      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo",
-        "Malgun Gothic", system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-width:320px;
+      min-height:100vh;
+      color:var(--text);
+      background:var(--bg);
+      font-family:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+      -webkit-font-smoothing:antialiased;
     }
 
-    .page {
-      width: min(1200px, calc(100% - 24px));
-      margin: 0 auto;
-      padding: 28px 0 40px;
+    button,input{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,input:focus-visible{
+      outline:3px solid rgba(47,118,243,.22);
+      outline-offset:2px;
     }
 
-    .header {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 16px;
+    .page{
+      width:min(1200px,calc(100% - 24px));
+      margin:0 auto;
+      padding:28px 0 40px;
     }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      letter-spacing: -0.04em;
+    .header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:16px;
     }
 
-    .table-card {
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: var(--surface);
-      box-shadow: var(--shadow);
+    h1{
+      margin:0;
+      font-size:clamp(1.8rem,4vw,2.5rem);
+      letter-spacing:-.04em;
     }
 
-    .table-scroll {
-      overflow: auto;
-      max-height: calc(100vh - 110px);
-      -webkit-overflow-scrolling: touch;
+    .updated{
+      min-height:1em;
+      margin:6px 0 0;
+      color:var(--muted);
+      font-size:.82rem;
     }
 
-    table {
-      border-collapse: separate;
-      border-spacing: 0;
-      min-width: 1040px;
-      width: max-content;
-      font-variant-numeric: tabular-nums;
+    .actions{
+      display:flex;
+      gap:8px;
     }
 
-    th, td {
-      min-width: 48px;
-      height: 48px;
-      padding: 8px 6px;
-      border-right: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      text-align: center;
-      white-space: nowrap;
-      background: var(--surface);
-      font-size: 0.88rem;
+    .button{
+      min-height:40px;
+      padding:0 15px;
+      border:1px solid transparent;
+      border-radius:9px;
+      font-weight:700;
     }
 
-    thead th {
-      position: sticky;
-      top: 0;
-      z-index: 4;
-      color: #64718d;
-      background: var(--surface-soft);
-      font-weight: 800;
+    .button-primary{color:#fff;background:var(--accent)}
+    .button-primary:hover{background:var(--accent-hover)}
+    .button-secondary{
+      color:var(--text);
+      border-color:var(--line-strong);
+      background:#fff;
+    }
+    .hidden{display:none!important}
+
+    .table-card{
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:var(--surface);
+      box-shadow:var(--shadow);
     }
 
-    thead th:nth-child(1),
-    tbody td:nth-child(1) {
-      position: sticky;
-      left: 0;
-      z-index: 3;
-      width: 48px;
-      min-width: 48px;
-      background: var(--surface);
+    .table-scroll{
+      overflow:auto;
+      max-height:calc(100vh - 118px);
+      -webkit-overflow-scrolling:touch;
     }
 
-    thead th:nth-child(2),
-    tbody td:nth-child(2) {
-      position: sticky;
-      left: 48px;
-      z-index: 3;
-      width: 92px;
-      min-width: 92px;
-      background: var(--surface);
+    table{
+      border-collapse:separate;
+      border-spacing:0;
+      min-width:1040px;
+      width:max-content;
+      font-variant-numeric:tabular-nums;
     }
 
-    thead th:nth-child(3),
-    tbody td:nth-child(3) {
-      position: sticky;
-      left: 140px;
-      z-index: 3;
-      width: 100px;
-      min-width: 100px;
-      background: var(--surface);
-      box-shadow: 6px 0 10px rgba(34, 55, 96, 0.04);
+    th,td{
+      min-width:48px;
+      height:48px;
+      padding:7px 5px;
+      border-right:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      text-align:center;
+      white-space:nowrap;
+      background:var(--surface);
+      font-size:.86rem;
     }
 
-    thead th:nth-child(-n+3) {
-      z-index: 6;
-      background: #f4f7fc;
+    thead th{
+      position:sticky;
+      top:0;
+      z-index:4;
+      color:#64718d;
+      background:var(--soft);
+      font-weight:800;
     }
 
-    tbody tr:last-child td { border-bottom: 0; }
-
-    td.name,
-    td.baptismal {
-      text-align: left;
-      font-weight: 650;
+    thead th:nth-child(1),tbody td:nth-child(1){
+      position:sticky;
+      left:0;
+      z-index:3;
+      width:48px;
+      min-width:48px;
+      background:var(--surface);
     }
 
-    .date-head {
-      min-width: 52px;
-      color: var(--text);
+    thead th:nth-child(2),tbody td:nth-child(2){
+      position:sticky;
+      left:48px;
+      z-index:3;
+      width:92px;
+      min-width:92px;
+      background:var(--surface);
     }
 
-    .date-head span {
-      display: block;
-      line-height: 1.2;
+    thead th:nth-child(3),tbody td:nth-child(3){
+      position:sticky;
+      left:140px;
+      z-index:3;
+      width:100px;
+      min-width:100px;
+      background:var(--surface);
+      box-shadow:6px 0 10px rgba(34,55,96,.04);
     }
 
-    .date-head .month {
-      color: var(--muted);
-      font-size: 0.68rem;
-      font-weight: 700;
+    thead th:nth-child(-n+3){
+      z-index:6;
+      background:#f4f7fc;
     }
 
-    .date-head .day {
-      margin-top: 2px;
-      font-size: 0.82rem;
-      font-weight: 800;
+    tbody tr:last-child td{border-bottom:0}
+
+    td.name,td.baptismal{
+      text-align:left;
+      font-weight:650;
     }
 
-    .month-start {
-      border-left: 2px solid var(--line-strong) !important;
+    .date-head{
+      min-width:52px;
+      color:var(--text);
     }
 
-    .attendance-cell {
-      min-width: 52px;
-      background: #fff;
+    .date-head span{display:block;line-height:1.2}
+    .date-head .month{
+      color:var(--muted);
+      font-size:.68rem;
+      font-weight:700;
+    }
+    .date-head .day{
+      margin-top:2px;
+      font-size:.82rem;
+      font-weight:800;
     }
 
-    @media (max-width: 700px) {
-      .page {
-        width: 100%;
-        padding: 12px 0 0;
+    .month-start{
+      border-left:2px solid var(--line-strong)!important;
+    }
+
+    .attendance-cell{min-width:52px}
+    .mark{
+      font-weight:800;
+      color:var(--text);
+    }
+
+    .text-input,.mark-input{
+      width:100%;
+      min-height:34px;
+      border:1px solid var(--line-strong);
+      border-radius:7px;
+      color:var(--text);
+      background:#fff;
+      text-align:center;
+      font-weight:650;
+    }
+
+    .text-input{
+      padding:5px 6px;
+      text-align:left;
+    }
+
+    .mark-input{
+      padding:4px 2px;
+    }
+
+    .status{
+      min-height:20px;
+      margin:10px 2px 0;
+      color:var(--muted);
+      font-size:.84rem;
+    }
+    .status.error{color:var(--error)}
+    .status.success{color:var(--success)}
+
+    dialog{
+      width:min(390px,calc(100% - 28px));
+      padding:0;
+      border:0;
+      border-radius:16px;
+      color:var(--text);
+      background:#fff;
+      box-shadow:0 24px 60px rgba(30,45,78,.18);
+    }
+
+    dialog::backdrop{
+      background:rgba(23,34,63,.28);
+      backdrop-filter:blur(2px);
+    }
+
+    .password-card{padding:22px}
+    .dialog-title{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .password-card h2{margin:0 0 20px;font-size:1.4rem}
+    .password-card label{
+      display:block;
+      margin-bottom:8px;
+      color:#55617b;
+      font-size:.88rem;
+      font-weight:700;
+    }
+    .password-card input{
+      width:100%;
+      height:44px;
+      padding:0 12px;
+      border:1px solid var(--line-strong);
+      border-radius:9px;
+    }
+    .form-error{
+      min-height:20px;
+      margin:7px 0 10px;
+      color:var(--error);
+      font-size:.82rem;
+    }
+    .icon-button{
+      width:36px;
+      height:36px;
+      border:0;
+      border-radius:50%;
+      color:var(--muted);
+      background:transparent;
+      font-size:1.6rem;
+      line-height:1;
+    }
+
+    @media(max-width:700px){
+      .page{
+        width:100%;
+        padding:12px 0 0;
       }
-
-      .header {
-        padding: 0 12px;
-        margin-bottom: 10px;
+      .header{
+        padding:0 12px;
+        margin-bottom:10px;
       }
-
-      h1 {
-        font-size: 1.45rem;
+      h1{font-size:1.45rem}
+      .actions{gap:5px}
+      .button{
+        min-height:36px;
+        padding:0 11px;
+        font-size:.8rem;
       }
-
-      .table-card {
-        border-left: 0;
-        border-right: 0;
-        border-radius: 0;
+      .table-card{
+        border-left:0;
+        border-right:0;
+        border-radius:0;
       }
-
-      .table-scroll {
-        max-height: calc(100dvh - 58px);
+      .table-scroll{max-height:calc(100dvh - 64px)}
+      th,td{
+        height:44px;
+        padding:5px 4px;
+        font-size:.76rem;
       }
-
-      th, td {
-        height: 44px;
-        padding: 6px 4px;
-        font-size: 0.78rem;
+      thead th:nth-child(2),tbody td:nth-child(2){
+        width:78px;
+        min-width:78px;
       }
-
-      thead th:nth-child(2),
-      tbody td:nth-child(2) {
-        width: 78px;
-        min-width: 78px;
+      thead th:nth-child(3),tbody td:nth-child(3){
+        left:126px;
+        width:84px;
+        min-width:84px;
       }
-
-      thead th:nth-child(3),
-      tbody td:nth-child(3) {
-        left: 126px;
-        width: 84px;
-        min-width: 84px;
+      .date-head,.attendance-cell{min-width:46px}
+      .text-input,.mark-input{
+        min-height:31px;
+        font-size:.74rem;
       }
-
-      .date-head,
-      .attendance-cell {
-        min-width: 46px;
+      .status{
+        padding:0 10px;
+        margin-top:5px;
+        font-size:.72rem;
       }
     }
   </style>
@@ -223,88 +334,299 @@
 <body>
   <main class="page">
     <header class="header">
-      <h1>출석부</h1>
+      <div>
+        <h1>출석부</h1>
+        <p id="updatedText" class="updated"></p>
+      </div>
+      <div class="actions">
+        <button id="editButton" class="button button-primary" type="button">수정</button>
+        <button id="saveButton" class="button button-primary hidden" type="button">저장</button>
+        <button id="cancelButton" class="button button-secondary hidden" type="button">취소</button>
+      </div>
     </header>
 
     <section class="table-card">
       <div class="table-scroll">
         <table aria-label="출석부">
-          <thead>
-            <tr>
-              <th scope="col">번호</th>
-              <th scope="col">성명</th>
-              <th scope="col">세례명</th>
-              <th class="date-head month-start" scope="col"><span class="month">9월</span><span class="day">9/5</span></th>
-              <th class="date-head" scope="col"><span class="month">9월</span><span class="day">9/12</span></th>
-              <th class="date-head" scope="col"><span class="month">9월</span><span class="day">9/18</span></th>
-              <th class="date-head" scope="col"><span class="month">9월</span><span class="day">9/26</span></th>
-              <th class="date-head month-start" scope="col"><span class="month">10월</span><span class="day">10/4</span></th>
-              <th class="date-head" scope="col"><span class="month">10월</span><span class="day">10/11</span></th>
-              <th class="date-head" scope="col"><span class="month">10월</span><span class="day">10/18</span></th>
-              <th class="date-head" scope="col"><span class="month">10월</span><span class="day">10/25</span></th>
-              <th class="date-head month-start" scope="col"><span class="month">11월</span><span class="day">11/1</span></th>
-              <th class="date-head" scope="col"><span class="month">11월</span><span class="day">11/8</span></th>
-              <th class="date-head" scope="col"><span class="month">11월</span><span class="day">11/15</span></th>
-              <th class="date-head" scope="col"><span class="month">11월</span><span class="day">11/22</span></th>
-              <th class="date-head month-start" scope="col"><span class="month">12월</span><span class="day">12/6</span></th>
-              <th class="date-head" scope="col"><span class="month">12월</span><span class="day">12/13</span></th>
-              <th class="date-head" scope="col"><span class="month">12월</span><span class="day">12/20</span></th>
-              <th class="date-head" scope="col"><span class="month">12월</span><span class="day">12/27</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td><td class="name">정서율</td><td class="baptismal">마테오</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>2</td><td class="name"></td><td class="baptismal"></td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>3</td><td class="name"></td><td class="baptismal">엘리사벳</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>4</td><td class="name">김세은</td><td class="baptismal"></td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>5</td><td class="name"></td><td class="baptismal">로사</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>6</td><td class="name">박주아</td><td class="baptismal">소피아</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>7</td><td class="name">김재현</td><td class="baptismal">로베르토</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>8</td><td class="name"></td><td class="baptismal">프란치스코</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>9</td><td class="name">최한비</td><td class="baptismal">시메온</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>10</td><td class="name">최혜윤</td><td class="baptismal">세베로</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>11</td><td class="name">김은지</td><td class="baptismal">라파엘라</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-            <tr>
-              <td>12</td><td class="name">이윤진</td><td class="baptismal">베드로</td>
-              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
-            </tr>
-          </tbody>
+          <thead id="attendanceHead"></thead>
+          <tbody id="attendanceBody"></tbody>
         </table>
       </div>
     </section>
+
+    <p id="statusMessage" class="status" role="status" aria-live="polite"></p>
   </main>
+
+  <dialog id="passwordDialog">
+    <form id="passwordForm" method="dialog" class="password-card">
+      <div class="dialog-title">
+        <h2>출석부 수정</h2>
+        <button id="dialogClose" class="icon-button" type="button" aria-label="닫기">×</button>
+      </div>
+      <label for="passwordInput">비밀번호</label>
+      <input id="passwordInput" type="password" autocomplete="current-password" required />
+      <p id="passwordError" class="form-error" aria-live="polite"></p>
+      <button class="button button-primary" style="width:100%" type="submit">확인</button>
+    </form>
+  </dialog>
+
+  <script>
+    const LOCAL_KEY = "attendance-2026-v1";
+    const LOCAL_PASSWORD = "maria1004";
+    const isGitHubPages = location.hostname.endsWith("github.io");
+
+    const state = {
+      data: null,
+      original: null,
+      editing: false,
+      password: "",
+      serverAvailable: false
+    };
+
+    const head = document.getElementById("attendanceHead");
+    const body = document.getElementById("attendanceBody");
+    const editButton = document.getElementById("editButton");
+    const saveButton = document.getElementById("saveButton");
+    const cancelButton = document.getElementById("cancelButton");
+    const updatedText = document.getElementById("updatedText");
+    const statusMessage = document.getElementById("statusMessage");
+    const dialog = document.getElementById("passwordDialog");
+    const passwordForm = document.getElementById("passwordForm");
+    const passwordInput = document.getElementById("passwordInput");
+    const passwordError = document.getElementById("passwordError");
+    const dialogClose = document.getElementById("dialogClose");
+
+    function esc(v) {
+      return String(v ?? "").replace(/[&<>"']/g, ch => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+      })[ch]);
+    }
+
+    function shortDate(iso) {
+      const [,m,d] = iso.split("-");
+      return `${Number(m)}/${Number(d)}`;
+    }
+
+    function month(iso) {
+      return Number(iso.split("-")[1]);
+    }
+
+    function render() {
+      if (!state.data) return;
+
+      let prevMonth = null;
+      head.innerHTML = "<tr><th>번호</th><th>성명</th><th>세례명</th>" +
+        state.data.dates.map(date => {
+          const m = month(date);
+          const cls = m !== prevMonth ? "date-head month-start" : "date-head";
+          prevMonth = m;
+          return `<th class="${cls}"><span class="month">${m}월</span><span class="day">${shortDate(date)}</span></th>`;
+        }).join("") + "</tr>";
+
+      body.innerHTML = state.data.rows.map((row, rowIndex) => {
+        const name = state.editing
+          ? `<input class="text-input" data-row="${rowIndex}" data-kind="name" value="${esc(row.name)}" maxlength="20">`
+          : esc(row.name);
+        const baptismal = state.editing
+          ? `<input class="text-input" data-row="${rowIndex}" data-kind="baptismal" value="${esc(row.baptismal)}" maxlength="20">`
+          : esc(row.baptismal);
+
+        const marks = row.attendance.map((value, dateIndex) => {
+          const m = month(state.data.dates[dateIndex]);
+          const prev = dateIndex ? month(state.data.dates[dateIndex - 1]) : null;
+          const cls = m !== prev ? "attendance-cell month-start" : "attendance-cell";
+          if (state.editing) {
+            return `<td class="${cls}"><input class="mark-input" data-row="${rowIndex}" data-date="${dateIndex}" value="${esc(value)}" maxlength="6"></td>`;
+          }
+          return `<td class="${cls}"><span class="mark">${esc(value)}</span></td>`;
+        }).join("");
+
+        return `<tr>
+          <td>${row.number}</td>
+          <td class="name">${name}</td>
+          <td class="baptismal">${baptismal}</td>
+          ${marks}
+        </tr>`;
+      }).join("");
+
+      editButton.classList.toggle("hidden", state.editing);
+      saveButton.classList.toggle("hidden", !state.editing);
+      cancelButton.classList.toggle("hidden", !state.editing);
+
+      if (state.data.updatedAt) {
+        updatedText.textContent = new Intl.DateTimeFormat("ko-KR", {
+          timeZone:"Asia/Seoul",year:"numeric",month:"numeric",day:"numeric",
+          hour:"2-digit",minute:"2-digit"
+        }).format(new Date(state.data.updatedAt));
+      } else {
+        updatedText.textContent = "";
+      }
+    }
+
+    function setStatus(message, type="") {
+      statusMessage.textContent = message;
+      statusMessage.className = "status" + (type ? " " + type : "");
+    }
+
+    function loadLocal() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(LOCAL_KEY));
+        if (saved && Array.isArray(saved.rows) && Array.isArray(saved.dates)) return saved;
+      } catch (_) {}
+      return null;
+    }
+
+    async function load() {
+      if (!isGitHubPages) {
+        try {
+          const r = await fetch("/api/attendance", {cache:"no-store"});
+          if (r.ok) {
+            state.data = await r.json();
+            state.serverAvailable = true;
+            state.original = structuredClone(state.data);
+            render();
+            return;
+          }
+        } catch (_) {}
+      }
+
+      state.serverAvailable = false;
+      const local = loadLocal();
+      if (local) {
+        state.data = local;
+        state.original = structuredClone(local);
+        render();
+        return;
+      }
+
+      try {
+        const r = await fetch("data/attendance.json?v=20260921-1", {cache:"no-store"});
+        if (!r.ok) throw new Error();
+        state.data = await r.json();
+        state.original = structuredClone(state.data);
+        render();
+      } catch {
+        setStatus("출석부를 불러오지 못했습니다.","error");
+      }
+    }
+
+    editButton.addEventListener("click", () => {
+      passwordInput.value = "";
+      passwordError.textContent = "";
+      dialog.showModal();
+      requestAnimationFrame(() => passwordInput.focus());
+    });
+
+    dialogClose.addEventListener("click", () => dialog.close());
+
+    passwordForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const password = passwordInput.value;
+      passwordError.textContent = "";
+
+      if (!state.serverAvailable) {
+        if (password !== LOCAL_PASSWORD) {
+          passwordError.textContent = "비밀번호가 맞지 않습니다.";
+          return;
+        }
+        state.password = password;
+        state.editing = true;
+        state.original = structuredClone(state.data);
+        dialog.close();
+        render();
+        return;
+      }
+
+      try {
+        const r = await fetch("/api/attendance", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"verify",password})
+        });
+        if (r.status === 401) {
+          passwordError.textContent = "비밀번호가 맞지 않습니다.";
+          return;
+        }
+        if (!r.ok) throw new Error();
+        state.password = password;
+        state.editing = true;
+        state.original = structuredClone(state.data);
+        dialog.close();
+        render();
+      } catch {
+        passwordError.textContent = "인증 중 오류가 발생했습니다.";
+      }
+    });
+
+    body.addEventListener("input", e => {
+      if (!state.editing) return;
+
+      const text = e.target.closest(".text-input");
+      if (text) {
+        const row = Number(text.dataset.row);
+        state.data.rows[row][text.dataset.kind] = text.value;
+        return;
+      }
+
+      const mark = e.target.closest(".mark-input");
+      if (mark) {
+        const row = Number(mark.dataset.row);
+        const date = Number(mark.dataset.date);
+        state.data.rows[row].attendance[date] = mark.value;
+      }
+    });
+
+    cancelButton.addEventListener("click", () => {
+      state.data = structuredClone(state.original);
+      state.editing = false;
+      state.password = "";
+      render();
+      setStatus("");
+    });
+
+    saveButton.addEventListener("click", async () => {
+      saveButton.disabled = true;
+      cancelButton.disabled = true;
+
+      if (!state.serverAvailable) {
+        state.data.updatedAt = new Date().toISOString();
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(state.data));
+        state.original = structuredClone(state.data);
+        state.editing = false;
+        state.password = "";
+        render();
+        setStatus("저장했습니다.","success");
+        saveButton.disabled = false;
+        cancelButton.disabled = false;
+        return;
+      }
+
+      try {
+        const r = await fetch("/api/attendance", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({
+            action:"save",
+            password:state.password,
+            attendance:state.data
+          })
+        });
+        if (!r.ok) throw new Error();
+        state.data = await r.json();
+        state.original = structuredClone(state.data);
+        state.editing = false;
+        state.password = "";
+        render();
+        setStatus("저장했습니다.","success");
+      } catch {
+        setStatus("저장하지 못했습니다.","error");
+      } finally {
+        saveButton.disabled = false;
+        cancelButton.disabled = false;
+      }
+    });
+
+    load();
+  </script>
 </body>
 </html>
