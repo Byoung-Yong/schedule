@@ -27,6 +27,8 @@ const fieldLabels = {
   drums: "드럼"
 };
 
+const isGitHubPages = location.hostname.endsWith("github.io");
+
 function kstTodayISO() {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Seoul",
@@ -108,23 +110,25 @@ function setStatus(message, type = "") {
 
 async function loadSchedule() {
   try {
-    const response = await fetch("/api/schedule", { cache: "no-store" });
-    if (!response.ok) throw new Error("server_unavailable");
-    state.schedule = await response.json();
-    state.serverAvailable = true;
-    state.original = structuredClone(state.schedule);
-    render();
-    return;
-  } catch (_) {
-    state.serverAvailable = false;
-  }
+    let response;
 
-  try {
-    const response = await fetch("../data/schedule.json", { cache: "no-store" });
-    if (!response.ok) throw new Error("fallback_load_failed");
+    if (isGitHubPages) {
+      response = await fetch("../data/schedule.json?v=20260921-2", { cache: "no-store" });
+      state.serverAvailable = false;
+    } else {
+      response = await fetch("/api/schedule", { cache: "no-store" });
+      state.serverAvailable = response.ok;
+      if (!response.ok) {
+        response = await fetch("../data/schedule.json?v=20260921-2", { cache: "no-store" });
+      }
+    }
+
+    if (!response.ok) throw new Error("load_failed");
+
     state.schedule = await response.json();
     state.original = structuredClone(state.schedule);
     render();
+    setStatus("");
   } catch {
     setStatus("일정을 불러오지 못했습니다.", "error");
   }
@@ -145,7 +149,7 @@ passwordForm.addEventListener("submit", async event => {
   passwordError.textContent = "";
 
   if (!state.serverAvailable) {
-    passwordError.textContent = "현재 배포에서는 수정 기능을 사용할 수 없습니다.";
+    passwordError.textContent = "현재 GitHub Pages에서는 수정 기능을 사용할 수 없습니다.";
     return;
   }
 
@@ -207,14 +211,6 @@ saveButton.addEventListener("click", async () => {
         schedule: { ...state.schedule, rows: cleanedRows }
       })
     });
-
-    if (response.status === 401) {
-      state.editing = false;
-      state.password = "";
-      render();
-      setStatus("다시 로그인해 주세요.", "error");
-      return;
-    }
 
     if (!response.ok) throw new Error("save_failed");
 
