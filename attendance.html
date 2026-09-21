@@ -398,8 +398,6 @@
   </dialog>
 
   <script>
-    const LOCAL_KEY = "attendance-2026-v1";
-    const LOCAL_PASSWORD = "maria1004";
     const isGitHubPages = location.hostname.endsWith("github.io");
 
     const state = {
@@ -501,14 +499,6 @@
       statusMessage.className = "status" + (type ? " " + type : "");
     }
 
-    function loadLocal() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(LOCAL_KEY));
-        if (saved && Array.isArray(saved.rows) && Array.isArray(saved.dates)) return saved;
-      } catch (_) {}
-      return null;
-    }
-
     async function load() {
       if (!isGitHubPages) {
         try {
@@ -524,16 +514,9 @@
       }
 
       state.serverAvailable = false;
-      const local = loadLocal();
-      if (local) {
-        state.data = local;
-        state.original = structuredClone(local);
-        render();
-        return;
-      }
 
       try {
-        const r = await fetch("data/attendance.json?v=20260921-1", {cache:"no-store"});
+        const r = await fetch("data/attendance.json?v=20260921-2", {cache:"no-store"});
         if (!r.ok) throw new Error();
         state.data = await r.json();
         state.original = structuredClone(state.data);
@@ -558,15 +541,7 @@
       passwordError.textContent = "";
 
       if (!state.serverAvailable) {
-        if (password !== LOCAL_PASSWORD) {
-          passwordError.textContent = "비밀번호가 맞지 않습니다.";
-          return;
-        }
-        state.password = password;
-        state.editing = true;
-        state.original = structuredClone(state.data);
-        dialog.close();
-        render();
+        passwordError.textContent = "공용 저장 서버가 연결되지 않아 현재 주소에서는 수정할 수 없습니다.";
         return;
       }
 
@@ -628,13 +603,7 @@
       cancelButton.disabled = true;
 
       if (!state.serverAvailable) {
-        state.data.updatedAt = new Date().toISOString();
-        localStorage.setItem(LOCAL_KEY, JSON.stringify(state.data));
-        state.original = structuredClone(state.data);
-        state.editing = false;
-        state.password = "";
-        render();
-        setStatus("저장했습니다.","success");
+        setStatus("공용 저장 서버가 연결되지 않았습니다.","error");
         saveButton.disabled = false;
         cancelButton.disabled = false;
         return;
