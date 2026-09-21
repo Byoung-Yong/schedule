@@ -97,6 +97,13 @@ h1 {
 
 .button-secondary:hover { background: var(--surface-soft); }
 
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 .button-full { width: 100%; }
 .hidden { display: none !important; }
 
