@@ -3,159 +3,238 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f7f4ee" />
+  <meta name="theme-color" content="#f3f0e8" />
   <title>미사 봉사 일정</title>
   <style>
     :root {
-      --bg: #f7f4ee;
-      --paper: #fffdf9;
-      --ink: #272822;
-      --muted: #77786f;
-      --line: #ddd9d0;
-      --line-strong: #c8c3b8;
-      --accent: #7a3f34;
-      --accent-dark: #5e2f27;
-      --past-bg: #f0eee8;
-      --past-text: #929087;
-      --focus: #b46d5e;
-      --danger: #9a3f35;
-      --shadow: 0 18px 50px rgba(49, 43, 34, 0.08);
+      --canvas: #f3f0e8;
+      --paper: #fffdf8;
+      --ink: #27251f;
+      --ink-soft: #615e55;
+      --muted: #8b877c;
+      --line: #ded9cd;
+      --line-strong: #c9c2b4;
+      --wine: #743b34;
+      --wine-deep: #562a25;
+      --wine-soft: #f4e9e4;
+      --sage: #667060;
+      --past: #a19d92;
+      --danger: #9b3f35;
+      --focus: #a76558;
+      --shadow: 0 22px 60px rgba(55, 47, 35, .07);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html {
-      background: var(--bg);
+      background: var(--canvas);
+      color-scheme: light;
     }
 
     body {
       margin: 0;
       min-width: 320px;
       color: var(--ink);
-      background: var(--bg);
+      background: var(--canvas);
       font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo",
         "Malgun Gothic", sans-serif;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
 
     button:focus-visible,
     input:focus-visible {
-      outline: 3px solid color-mix(in srgb, var(--focus) 35%, transparent);
-      outline-offset: 2px;
+      outline: 3px solid color-mix(in srgb, var(--focus) 33%, transparent);
+      outline-offset: 3px;
     }
 
-    .wrap {
-      width: min(1080px, calc(100% - 32px));
+    .page {
+      width: min(1120px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 58px 0 34px;
+      padding: 44px 0 40px;
     }
 
-    header {
+    .masthead {
       display: flex;
-      align-items: end;
+      align-items: center;
       justify-content: space-between;
       gap: 24px;
-      margin-bottom: 24px;
+      min-height: 52px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--line-strong);
     }
 
-    .eyebrow {
-      margin: 0 0 9px;
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.17em;
+    .identity {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
     }
 
-    h1 {
-      margin: 0 0 10px;
-      font-family: Georgia, "Times New Roman", "Noto Serif KR", serif;
-      font-size: clamp(36px, 6vw, 58px);
-      font-weight: 600;
+    .cross {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      color: var(--wine);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
       line-height: 1;
-      letter-spacing: -0.04em;
     }
 
-    .intro {
+    .identity-copy {
+      display: grid;
+      gap: 2px;
+    }
+
+    .identity-kicker {
+      color: var(--wine);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .17em;
+    }
+
+    .identity-name {
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 36px;
+      padding: 56px 0 32px;
+    }
+
+    .hero-title {
       margin: 0;
-      color: var(--muted);
+      font-family: "Noto Serif KR", "Nanum Myeongjo", "Batang", Georgia, serif;
+      font-size: clamp(38px, 5.6vw, 66px);
+      font-weight: 600;
+      line-height: 1.06;
+      letter-spacing: -.045em;
+    }
+
+    .hero-copy {
+      max-width: 460px;
+      margin: 14px 0 0;
+      color: var(--ink-soft);
       font-size: 14px;
-      line-height: 1.7;
+      line-height: 1.8;
+      word-break: keep-all;
+    }
+
+    .year-mark {
+      align-self: stretch;
+      display: grid;
+      align-content: end;
+      min-width: 112px;
+      border-left: 1px solid var(--line-strong);
+      padding-left: 24px;
+      color: var(--muted);
+    }
+
+    .year-mark strong {
+      display: block;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 29px;
+      font-weight: 500;
+      letter-spacing: -.03em;
+    }
+
+    .year-mark span {
+      margin-top: 2px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .13em;
     }
 
     .button {
-      min-height: 44px;
-      border-radius: 8px;
-      padding: 0 17px;
-      font-weight: 750;
+      min-height: 42px;
       border: 1px solid var(--line-strong);
-      background: transparent;
+      border-radius: 5px;
+      padding: 0 15px;
       color: var(--ink);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+      transition: background-color .16s ease, border-color .16s ease, color .16s ease,
+        transform .16s ease;
     }
 
     .button:hover {
-      background: #f1eee7;
+      border-color: #b7afa0;
+      background: #ebe7de;
     }
 
+    .button:active { transform: translateY(1px); }
+
     .button.primary {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: white;
+      border-color: var(--wine);
+      color: #fff;
+      background: var(--wine);
     }
 
     .button.primary:hover {
-      background: var(--accent-dark);
+      border-color: var(--wine-deep);
+      background: var(--wine-deep);
     }
 
     .button.danger {
-      border-color: #d6b7b1;
+      border-color: #d7bcb5;
       color: var(--danger);
     }
 
-    .panel {
+    .schedule {
       overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 7px;
       background: var(--paper);
       box-shadow: var(--shadow);
     }
 
-    .panel-head {
-      display: flex;
+    .schedule-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
       align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      padding: 22px 26px 18px;
+      padding: 22px 26px 20px;
       border-bottom: 1px solid var(--line);
     }
 
-    .panel-head h2 {
-      margin: 0 0 5px;
-      font-size: 18px;
-      letter-spacing: -0.02em;
+    .schedule-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      min-width: 0;
     }
 
-    .panel-head p {
+    .schedule-heading h2 {
       margin: 0;
+      font-family: "Noto Serif KR", "Nanum Myeongjo", "Batang", Georgia, serif;
+      font-size: 21px;
+      font-weight: 600;
+      letter-spacing: -.025em;
+    }
+
+    .saved-at {
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
+      white-space: nowrap;
     }
 
     .legend {
       display: flex;
-      gap: 14px;
+      align-items: center;
+      gap: 15px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       white-space: nowrap;
     }
 
@@ -165,127 +244,197 @@
       gap: 6px;
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
+    .legend i {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: var(--accent);
+      background: var(--wine);
     }
 
-    .dot.past {
-      background: #aaa79d;
+    .legend .done { background: #aaa59a; }
+
+    .next-glance {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 82px;
+      padding: 17px 26px;
+      border-bottom: 1px solid var(--line);
+      background: #fbf7f0;
+    }
+
+    .next-label {
+      color: var(--wine);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .14em;
+      white-space: nowrap;
+    }
+
+    .next-date {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .next-date strong {
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", "Noto Serif KR", serif;
+      font-size: 30px;
+      font-weight: 500;
+      letter-spacing: -.03em;
+      white-space: nowrap;
+    }
+
+    .next-date span {
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .next-progress {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .next-progress strong {
+      color: var(--sage);
+      font-weight: 850;
     }
 
     .notice {
       display: none;
-      margin: 16px 26px 0;
-      padding: 10px 12px;
-      border: 1px solid #dec9c4;
-      border-radius: 8px;
-      background: #fbf4f1;
-      color: #6a372f;
+      margin: 15px 26px 0;
+      border-left: 3px solid var(--wine);
+      padding: 9px 12px;
+      color: #65362e;
+      background: var(--wine-soft);
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
-    .notice.show {
-      display: block;
-    }
+    .notice.show { display: block; }
 
-    .table-scroll {
+    .table-wrap {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
-      min-width: 650px;
+      min-width: 690px;
       border-collapse: collapse;
       table-layout: fixed;
       font-variant-numeric: tabular-nums;
     }
 
-    th,
-    td {
+    th, td {
       border-bottom: 1px solid var(--line);
-      padding: 15px 12px;
+      padding: 15px 13px;
       text-align: center;
       vertical-align: middle;
     }
 
     th {
-      background: #faf8f3;
-      color: #67685f;
-      font-size: 12px;
-      font-weight: 800;
+      height: 44px;
+      color: var(--muted);
+      background: #fffdf8;
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .035em;
     }
 
     th:first-child,
-    td:first-child {
-      width: 118px;
+    td:first-child { width: 132px; }
+
+    tbody tr {
+      transition: background-color .15s ease;
     }
 
-    tbody tr:last-child td {
-      border-bottom: 0;
+    tbody tr:last-child td { border-bottom: 0; }
+
+    tbody tr.future-row:hover { background: #fcfaf5; }
+
+    .past-row {
+      color: var(--past);
+      background: #f6f3ed;
     }
 
-    tr.past-row {
-      background: var(--past-bg);
-      color: var(--past-text);
+    .past-row td {
+      border-bottom-color: #e6e1d8;
     }
 
-    tr.future-row {
-      background: var(--paper);
+    .next-row {
+      background: #fbf7ef;
+      box-shadow: inset 3px 0 0 var(--wine);
     }
+
+    .next-row td {
+      color: var(--ink);
+    }
+
+    .date-cell { line-height: 1.2; }
 
     .date-main {
       display: block;
-      font-weight: 800;
+      color: inherit;
+      font-family: Georgia, "Times New Roman", "Noto Serif KR", serif;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.01em;
     }
 
     .state {
-      display: block;
-      margin-top: 3px;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+      display: inline-block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: .08em;
     }
 
-    .future-row .state {
-      color: var(--accent);
-    }
-
-    .past-row .state {
-      color: #99968d;
-    }
+    .future-row .state { color: var(--wine); }
+    .past-row .state { color: #aaa69d; }
+    .next-row .state { color: var(--wine); }
 
     .empty {
-      color: #b3b0a7;
+      color: #b5b0a5;
+      font-size: 12px;
     }
 
-    .edit-row td {
-      padding: 8px 7px;
-    }
+    .edit-row td { padding: 9px 7px; }
 
     .cell-input,
     .date-input {
       width: 100%;
       min-height: 38px;
       border: 1px solid var(--line-strong);
-      border-radius: 6px;
+      border-radius: 4px;
       padding: 7px 8px;
-      background: white;
       color: var(--ink);
+      background: #fff;
       text-align: center;
+    }
+
+    .cell-input::placeholder { color: #bbb6ac; }
+
+    .cell-input:focus,
+    .date-input:focus {
+      border-color: var(--wine);
     }
 
     .delete-row {
       margin-top: 5px;
       border: 0;
-      background: transparent;
+      padding: 1px 3px;
       color: var(--danger);
-      font-size: 11px;
+      background: transparent;
+      font-size: 10px;
       text-decoration: underline;
+      text-underline-offset: 2px;
     }
 
     .edit-actions {
@@ -293,164 +442,361 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      padding: 16px 20px;
+      padding: 15px 20px;
       border-top: 1px solid var(--line);
-      background: #faf8f3;
+      background: #faf7f1;
     }
 
-    .edit-actions.show {
-      display: flex;
-    }
+    .edit-actions.show { display: flex; }
 
     .button-group {
       display: flex;
       gap: 8px;
     }
 
-    footer {
+    .page-note {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
       padding: 16px 2px 0;
       color: var(--muted);
       font-size: 11px;
-      line-height: 1.6;
+      line-height: 1.65;
+    }
+
+    .page-note strong {
+      color: var(--ink-soft);
+      font-weight: 750;
     }
 
     dialog {
-      width: min(420px, calc(100% - 28px));
-      border: 0;
-      border-radius: 14px;
+      width: min(405px, calc(100% - 28px));
+      border: 1px solid var(--line);
+      border-radius: 8px;
       padding: 0;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+      color: var(--ink);
+      background: var(--paper);
+      box-shadow: 0 28px 80px rgba(30, 27, 22, .22);
     }
 
     dialog::backdrop {
-      background: rgba(30, 28, 24, 0.48);
+      background: rgba(31, 28, 24, .48);
       backdrop-filter: blur(2px);
     }
 
     .dialog-body {
       display: grid;
       gap: 12px;
-      padding: 25px;
-      background: var(--paper);
+      padding: 26px;
+    }
+
+    .dialog-symbol {
+      color: var(--wine);
+      font-family: Georgia, serif;
+      font-size: 24px;
+      line-height: 1;
     }
 
     .dialog-body h2 {
-      margin: 0;
-      font-size: 22px;
-      letter-spacing: -0.02em;
+      margin: 2px 0 0;
+      font-family: "Noto Serif KR", "Nanum Myeongjo", "Batang", Georgia, serif;
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -.025em;
     }
 
     .dialog-body p {
-      margin: 0 0 3px;
+      margin: 0 0 4px;
       color: var(--muted);
       font-size: 13px;
     }
 
     .dialog-body label {
-      font-size: 12px;
-      font-weight: 800;
+      margin-top: 3px;
+      font-size: 11px;
+      font-weight: 850;
     }
 
     .password-input {
       min-height: 44px;
       border: 1px solid var(--line-strong);
-      border-radius: 8px;
+      border-radius: 4px;
       padding: 0 11px;
+      color: var(--ink);
+      background: #fff;
     }
 
     .dialog-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 4px;
+      margin-top: 5px;
     }
 
     .error {
-      min-height: 18px;
+      min-height: 17px;
       color: var(--danger);
-      font-size: 12px;
+      font-size: 11px;
     }
 
-    @media (max-width: 700px) {
-      .wrap {
-        width: min(100% - 20px, 1080px);
-        padding-top: 32px;
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 20px, 1120px);
+        padding-top: 20px;
       }
 
-      header {
-        align-items: flex-start;
+      .masthead {
+        min-height: 46px;
+        padding-bottom: 14px;
       }
 
-      h1 {
-        font-size: 38px;
+      .identity-name { display: none; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 34px 2px 24px;
       }
 
-      .intro {
-        max-width: 245px;
+      .hero-title {
+        max-width: 330px;
+        font-size: 42px;
+      }
+
+      .hero-copy {
+        max-width: 330px;
         font-size: 13px;
+        line-height: 1.7;
       }
 
-      .panel-head {
-        align-items: flex-start;
-        padding: 18px 15px 15px;
+      .year-mark { display: none; }
+
+      .schedule {
+        border-radius: 5px;
+        box-shadow: 0 14px 36px rgba(55, 47, 35, .06);
       }
 
-      .legend {
+      .schedule-head {
+        grid-template-columns: 1fr;
         gap: 10px;
-        font-size: 11px;
+        padding: 18px 16px 15px;
       }
 
-      th,
-      td {
-        padding: 13px 9px;
-        font-size: 13px;
+      .schedule-heading {
+        justify-content: space-between;
+        gap: 8px;
       }
+
+      .schedule-heading h2 { font-size: 19px; }
+
+      .legend { justify-content: flex-start; }
+
+      .next-glance {
+        grid-template-columns: 1fr auto;
+        gap: 5px 14px;
+        padding: 15px 16px;
+      }
+
+      .next-label {
+        grid-column: 1 / -1;
+      }
+
+      .next-date strong { font-size: 25px; }
+      .next-date span { font-size: 12px; }
+      .next-progress { font-size: 11px; }
 
       .notice {
-        margin-inline: 15px;
+        margin: 12px 16px 0;
+      }
+
+      .table-wrap { overflow: visible; }
+
+      table {
+        min-width: 0;
+        table-layout: auto;
+      }
+
+      thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
+      tbody {
+        display: block;
+      }
+
+      tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0 16px 10px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      tbody tr:last-child { border-bottom: 0; }
+
+      tbody tr.past-row {
+        background: #f7f4ee;
+      }
+
+      tbody tr.next-row {
+        box-shadow: inset 3px 0 0 var(--wine);
+      }
+
+      th, td {
+        border: 0;
+        padding: 10px 0;
+        text-align: left;
+      }
+
+      td:first-child {
+        grid-column: 1 / -1;
+        width: auto;
+        display: flex;
+        align-items: baseline;
+        gap: 9px;
+        padding: 15px 0 10px;
+        border-bottom: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+      }
+
+      td:not(:first-child) {
+        display: grid;
+        grid-template-columns: 48px minmax(0, 1fr);
+        align-items: center;
+        gap: 7px;
+        min-width: 0;
+        padding-right: 8px;
+      }
+
+      td:not(:first-child)::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .date-main { font-size: 18px; }
+      .state { margin-top: 0; }
+
+      .edit-row {
+        padding-bottom: 14px;
+      }
+
+      .edit-row td:not(:first-child) {
+        grid-template-columns: 48px minmax(0, 1fr);
+      }
+
+      .cell-input,
+      .date-input {
+        min-height: 39px;
+        text-align: left;
+      }
+
+      .date-input {
+        max-width: 170px;
+      }
+
+      .delete-row {
+        margin: 0 0 0 auto;
       }
 
       .edit-actions {
-        padding: 13px;
+        position: sticky;
+        bottom: 0;
+        z-index: 3;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px;
+        box-shadow: 0 -10px 24px rgba(55, 47, 35, .08);
+      }
+
+      .button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+
+      .edit-actions > .button {
+        width: 100%;
+      }
+
+      .button-group .button {
+        padding-inline: 8px;
+      }
+
+      .page-note {
+        display: block;
+        padding: 14px 2px 0;
+      }
+
+      .page-note span + span {
+        display: block;
+        margin-top: 3px;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
       * {
         scroll-behavior: auto !important;
+        transition: none !important;
       }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <header>
+  <main class="page">
+    <div class="masthead">
+      <div class="identity" aria-label="성당 봉사 일정">
+        <span class="cross" aria-hidden="true">†</span>
+        <span class="identity-copy">
+          <span class="identity-kicker">PARISH SCHEDULE</span>
+          <span class="identity-name">성당 봉사 일정</span>
+        </span>
+      </div>
+      <button id="editBtn" class="button primary" type="button">일정 수정</button>
+    </div>
+
+    <header class="hero">
       <div>
-        <p class="eyebrow">PARISH SCHEDULE</p>
-        <h1>미사 봉사 일정</h1>
-        <p class="intro">
-          지난 일정은 완료로, 앞으로의 일정은 예정으로 표시됩니다.<br />
-          빈칸은 아직 정해지지 않은 역할입니다.
+        <h1 class="hero-title">미사 봉사 일정</h1>
+        <p class="hero-copy">
+          지난 일정은 완료로 정리하고, 앞으로의 봉사 일정을 한눈에 확인합니다.
+          빈칸은 아직 담당자가 정해지지 않은 역할입니다.
         </p>
       </div>
-      <button id="editBtn" class="button primary" type="button">수정</button>
+      <div class="year-mark" aria-label="2026년 일정">
+        <strong>2026</strong>
+        <span>SEPTEMBER — DECEMBER</span>
+      </div>
     </header>
 
-    <section class="panel" aria-labelledby="scheduleTitle">
-      <div class="panel-head">
-        <div>
-          <h2 id="scheduleTitle">2026년 일정</h2>
-          <p id="savedAt">기본 일정</p>
+    <section class="schedule" aria-labelledby="scheduleTitle">
+      <div class="schedule-head">
+        <div class="schedule-heading">
+          <h2 id="scheduleTitle">2026년 하반기</h2>
+          <span id="savedAt" class="saved-at">기본 일정</span>
         </div>
         <div class="legend" aria-label="일정 상태">
-          <span><i class="dot past"></i>완료</span>
-          <span><i class="dot"></i>예정</span>
+          <span><i class="done"></i>완료</span>
+          <span><i></i>예정</span>
         </div>
+      </div>
+
+      <div class="next-glance" aria-live="polite">
+        <span class="next-label">NEXT SCHEDULE</span>
+        <div class="next-date">
+          <strong id="nextDate">—</strong>
+          <span id="nextWeekday"></span>
+        </div>
+        <div id="nextProgress" class="next-progress"></div>
       </div>
 
       <div id="notice" class="notice" role="status" aria-live="polite"></div>
 
-      <div class="table-scroll">
+      <div class="table-wrap">
         <table>
           <thead>
             <tr>
@@ -476,19 +822,17 @@
       </div>
     </section>
 
-    <footer>
-      이 HTML 단독 버전의 수정 내용은 현재 브라우저에 저장됩니다.
-      여러 기기에서 같은 내용을 공유하는 저장 기능은 다음 단계에서 연결할 수 있습니다.
+    <footer class="page-note">
+      <span><strong>완료</strong> 지난 일정 · <strong>예정</strong> 앞으로의 일정</span>
+      <span>수정 내용은 현재 브라우저에 저장됩니다.</span>
     </footer>
   </main>
 
   <dialog id="passwordDialog">
     <form id="passwordForm" class="dialog-body">
-      <div>
-        <p class="eyebrow">EDIT MODE</p>
-        <h2>일정 수정</h2>
-      </div>
-      <p>수정 비밀번호를 입력하세요.</p>
+      <div class="dialog-symbol" aria-hidden="true">†</div>
+      <h2>일정 수정</h2>
+      <p>관리 비밀번호를 입력하면 일정표를 편집할 수 있습니다.</p>
       <label for="passwordInput">비밀번호</label>
       <input
         id="passwordInput"
@@ -553,6 +897,9 @@
       saveBtn: document.getElementById("saveBtn"),
       notice: document.getElementById("notice"),
       savedAt: document.getElementById("savedAt"),
+      nextDate: document.getElementById("nextDate"),
+      nextWeekday: document.getElementById("nextWeekday"),
+      nextProgress: document.getElementById("nextProgress"),
       dialog: document.getElementById("passwordDialog"),
       passwordForm: document.getElementById("passwordForm"),
       passwordInput: document.getElementById("passwordInput"),
@@ -567,9 +914,7 @@
     function loadRows() {
       try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-        if (saved && Array.isArray(saved.rows)) {
-          return saved.rows;
-        }
+        if (saved && Array.isArray(saved.rows)) return saved.rows;
       } catch (_) {}
       return cloneRows(DEFAULT_ROWS);
     }
@@ -581,7 +926,6 @@
         month: "2-digit",
         day: "2-digit"
       }).formatToParts(new Date());
-
       const get = type => parts.find(p => p.type === type)?.value;
       return get("year") + "-" + get("month") + "-" + get("day");
     }
@@ -590,9 +934,31 @@
       return date < todaySeoul();
     }
 
+    function getNextDate(rows = state.rows) {
+      return cloneRows(rows)
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .find(row => row.date >= todaySeoul())?.date || "";
+    }
+
     function displayDate(date) {
       const parts = date.split("-");
+      return Number(parts[1]) + "월 " + Number(parts[2]) + "일";
+    }
+
+    function displayShortDate(date) {
+      const parts = date.split("-");
       return Number(parts[1]) + "/" + Number(parts[2]);
+    }
+
+    function weekday(date) {
+      return new Intl.DateTimeFormat("ko-KR", {
+        timeZone: "Asia/Seoul",
+        weekday: "long"
+      }).format(new Date(date + "T12:00:00+09:00"));
+    }
+
+    function assignedCount(row) {
+      return fields.reduce((count, [key]) => count + ((row[key] || "").trim() ? 1 : 0), 0);
     }
 
     function setNotice(message) {
@@ -609,7 +975,6 @@
         }
         const text = new Intl.DateTimeFormat("ko-KR", {
           timeZone: "Asia/Seoul",
-          year: "numeric",
           month: "long",
           day: "numeric",
           hour: "2-digit",
@@ -621,29 +986,58 @@
       }
     }
 
+    function updateNextGlance() {
+      const rows = cloneRows(state.rows).sort((a, b) => a.date.localeCompare(b.date));
+      const next = rows.find(row => row.date >= todaySeoul());
+
+      if (!next) {
+        el.nextDate.textContent = "예정 없음";
+        el.nextWeekday.textContent = "";
+        el.nextProgress.textContent = "현재 등록된 향후 일정이 없습니다.";
+        return;
+      }
+
+      el.nextDate.textContent = displayDate(next.date);
+      el.nextWeekday.textContent = weekday(next.date);
+      const count = assignedCount(next);
+
+      if (count === fields.length) {
+        el.nextProgress.innerHTML = "<strong>배정 완료</strong> · 5/5";
+      } else if (count === 0) {
+        el.nextProgress.innerHTML = "<strong>배정 전</strong> · 0/5";
+      } else {
+        el.nextProgress.innerHTML = "<strong>배정 중</strong> · " + count + "/5";
+      }
+    }
+
     function renderView() {
       el.body.innerHTML = "";
       const rows = cloneRows(state.rows).sort((a, b) => a.date.localeCompare(b.date));
+      const nextDate = getNextDate(rows);
 
       rows.forEach(row => {
         const tr = document.createElement("tr");
-        tr.className = isPast(row.date) ? "past-row" : "future-row";
+        const past = isPast(row.date);
+        tr.className = past ? "past-row" : "future-row";
+        if (row.date === nextDate) tr.classList.add("next-row");
 
         const dateTd = document.createElement("td");
+        dateTd.className = "date-cell";
+
         const dateMain = document.createElement("span");
-        const stateText = document.createElement("span");
-
         dateMain.className = "date-main";
-        dateMain.textContent = displayDate(row.date);
+        dateMain.textContent = displayShortDate(row.date);
 
+        const stateText = document.createElement("span");
         stateText.className = "state";
-        stateText.textContent = isPast(row.date) ? "완료" : "예정";
+        stateText.textContent = past ? "완료" : (row.date === nextDate ? "다음 일정" : "예정");
 
         dateTd.append(dateMain, stateText);
         tr.appendChild(dateTd);
 
-        fields.forEach(([key]) => {
+        fields.forEach(([key, label]) => {
           const td = document.createElement("td");
+          td.dataset.label = label;
           const value = (row[key] || "").trim();
           if (value) {
             td.textContent = value;
@@ -662,6 +1056,7 @@
       el.editActions.classList.remove("show");
       el.editBtn.hidden = false;
       updateSavedAt();
+      updateNextGlance();
     }
 
     function renderEdit() {
@@ -672,6 +1067,8 @@
         tr.className = "edit-row";
 
         const dateTd = document.createElement("td");
+        dateTd.className = "date-cell";
+
         const dateInput = document.createElement("input");
         dateInput.type = "date";
         dateInput.className = "date-input";
@@ -698,6 +1095,8 @@
 
         fields.forEach(([key, label]) => {
           const td = document.createElement("td");
+          td.dataset.label = label;
+
           const input = document.createElement("input");
           input.type = "text";
           input.className = "cell-input";
@@ -708,6 +1107,7 @@
           input.addEventListener("input", e => {
             state.draft[index][key] = e.target.value;
           });
+
           td.appendChild(input);
           tr.appendChild(td);
         });
@@ -724,12 +1124,8 @@
       if (rows.some(row => !/^\d{4}-\d{2}-\d{2}$/.test(row.date))) {
         return "모든 행에 날짜를 입력하세요.";
       }
-
       const dates = rows.map(row => row.date);
-      if (new Set(dates).size !== dates.length) {
-        return "같은 날짜가 두 번 들어가 있습니다.";
-      }
-
+      if (new Set(dates).size !== dates.length) return "같은 날짜가 두 번 들어가 있습니다.";
       return "";
     }
 
@@ -740,9 +1136,7 @@
       setTimeout(() => el.passwordInput.focus(), 30);
     });
 
-    el.dialogCancelBtn.addEventListener("click", () => {
-      el.dialog.close();
-    });
+    el.dialogCancelBtn.addEventListener("click", () => el.dialog.close());
 
     el.passwordForm.addEventListener("submit", event => {
       event.preventDefault();
@@ -762,7 +1156,7 @@
 
     el.addRowBtn.addEventListener("click", () => {
       const last = state.draft[state.draft.length - 1];
-      let next = new Date((last?.date || todaySeoul()) + "T12:00:00+09:00");
+      const next = new Date((last?.date || todaySeoul()) + "T12:00:00+09:00");
       next.setDate(next.getDate() + 7);
 
       const parts = new Intl.DateTimeFormat("en-US", {
@@ -802,7 +1196,6 @@
       }
 
       state.rows = cloneRows(state.draft).sort((a, b) => a.date.localeCompare(b.date));
-
       localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
