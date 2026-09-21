@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f4ee" />
+  <title>미사 봉사 일정</title>
+  <style>
+    :root {
+      --bg: #f7f4ee;
+      --paper: #fffdf9;
+      --ink: #272822;
+      --muted: #77786f;
+      --line: #ddd9d0;
+      --line-strong: #c8c3b8;
+      --accent: #7a3f34;
+      --accent-dark: #5e2f27;
+      --past-bg: #f0eee8;
+      --past-text: #929087;
+      --focus: #b46d5e;
+      --danger: #9a3f35;
+      --shadow: 0 18px 50px rgba(49, 43, 34, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo",
+        "Malgun Gothic", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--focus) 35%, transparent);
+      outline-offset: 2px;
+    }
+
+    .wrap {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 58px 0 34px;
+    }
+
+    header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      margin: 0 0 9px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.17em;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-family: Georgia, "Times New Roman", "Noto Serif KR", serif;
+      font-size: clamp(36px, 6vw, 58px);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .button {
+      min-height: 44px;
+      border-radius: 8px;
+      padding: 0 17px;
+      font-weight: 750;
+      border: 1px solid var(--line-strong);
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .button:hover {
+      background: #f1eee7;
+    }
+
+    .button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+
+    .button.primary:hover {
+      background: var(--accent-dark);
+    }
+
+    .button.danger {
+      border-color: #d6b7b1;
+      color: var(--danger);
+    }
+
+    .panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 26px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .dot.past {
+      background: #aaa79d;
+    }
+
+    .notice {
+      display: none;
+      margin: 16px 26px 0;
+      padding: 10px 12px;
+      border: 1px solid #dec9c4;
+      border-radius: 8px;
+      background: #fbf4f1;
+      color: #6a372f;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 15px 12px;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #faf8f3;
+      color: #67685f;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    th:first-child,
+    td:first-child {
+      width: 118px;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tr.past-row {
+      background: var(--past-bg);
+      color: var(--past-text);
+    }
+
+    tr.future-row {
+      background: var(--paper);
+    }
+
+    .date-main {
+      display: block;
+      font-weight: 800;
+    }
+
+    .state {
+      display: block;
+      margin-top: 3px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .future-row .state {
+      color: var(--accent);
+    }
+
+    .past-row .state {
+      color: #99968d;
+    }
+
+    .empty {
+      color: #b3b0a7;
+    }
+
+    .edit-row td {
+      padding: 8px 7px;
+    }
+
+    .cell-input,
+    .date-input {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      padding: 7px 8px;
+      background: white;
+      color: var(--ink);
+      text-align: center;
+    }
+
+    .delete-row {
+      margin-top: 5px;
+      border: 0;
+      background: transparent;
+      color: var(--danger);
+      font-size: 11px;
+      text-decoration: underline;
+    }
+
+    .edit-actions {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 20px;
+      border-top: 1px solid var(--line);
+      background: #faf8f3;
+    }
+
+    .edit-actions.show {
+      display: flex;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    footer {
+      padding: 16px 2px 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    dialog {
+      width: min(420px, calc(100% - 28px));
+      border: 0;
+      border-radius: 14px;
+      padding: 0;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+    }
+
+    dialog::backdrop {
+      background: rgba(30, 28, 24, 0.48);
+      backdrop-filter: blur(2px);
+    }
+
+    .dialog-body {
+      display: grid;
+      gap: 12px;
+      padding: 25px;
+      background: var(--paper);
+    }
+
+    .dialog-body h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .dialog-body p {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dialog-body label {
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .password-input {
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 0 11px;
+    }
+
+    .dialog-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .error {
+      min-height: 18px;
+      color: var(--danger);
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .wrap {
+        width: min(100% - 20px, 1080px);
+        padding-top: 32px;
+      }
+
+      header {
+        align-items: flex-start;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .intro {
+        max-width: 245px;
+        font-size: 13px;
+      }
+
+      .panel-head {
+        align-items: flex-start;
+        padding: 18px 15px 15px;
+      }
+
+      .legend {
+        gap: 10px;
+        font-size: 11px;
+      }
+
+      th,
+      td {
+        padding: 13px 9px;
+        font-size: 13px;
+      }
+
+      .notice {
+        margin-inline: 15px;
+      }
+
+      .edit-actions {
+        padding: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <div>
+        <p class="eyebrow">PARISH SCHEDULE</p>
+        <h1>미사 봉사 일정</h1>
+        <p class="intro">
+          지난 일정은 완료로, 앞으로의 일정은 예정으로 표시됩니다.<br />
+          빈칸은 아직 정해지지 않은 역할입니다.
+        </p>
+      </div>
+      <button id="editBtn" class="button primary" type="button">수정</button>
+    </header>
+
+    <section class="panel" aria-labelledby="scheduleTitle">
+      <div class="panel-head">
+        <div>
+          <h2 id="scheduleTitle">2026년 일정</h2>
+          <p id="savedAt">기본 일정</p>
+        </div>
+        <div class="legend" aria-label="일정 상태">
+          <span><i class="dot past"></i>완료</span>
+          <span><i class="dot"></i>예정</span>
+        </div>
+      </div>
+
+      <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">날짜</th>
+              <th scope="col">해설</th>
+              <th scope="col">1독서</th>
+              <th scope="col">2독서</th>
+              <th scope="col">반주</th>
+              <th scope="col">드럼</th>
+            </tr>
+          </thead>
+          <tbody id="scheduleBody"></tbody>
+        </table>
+      </div>
+
+      <div id="editActions" class="edit-actions">
+        <button id="addRowBtn" class="button" type="button">일정 추가</button>
+        <div class="button-group">
+          <button id="resetBtn" class="button danger" type="button">기본값 복원</button>
+          <button id="cancelBtn" class="button" type="button">취소</button>
+          <button id="saveBtn" class="button primary" type="button">저장</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      이 HTML 단독 버전의 수정 내용은 현재 브라우저에 저장됩니다.
+      여러 기기에서 같은 내용을 공유하는 저장 기능은 다음 단계에서 연결할 수 있습니다.
+    </footer>
+  </main>
+
+  <dialog id="passwordDialog">
+    <form id="passwordForm" class="dialog-body">
+      <div>
+        <p class="eyebrow">EDIT MODE</p>
+        <h2>일정 수정</h2>
+      </div>
+      <p>수정 비밀번호를 입력하세요.</p>
+      <label for="passwordInput">비밀번호</label>
+      <input
+        id="passwordInput"
+        class="password-input"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+      <div id="passwordError" class="error" aria-live="polite"></div>
+      <div class="dialog-actions">
+        <button id="dialogCancelBtn" class="button" type="button">취소</button>
+        <button class="button primary" type="submit">확인</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    const PASSWORD = "maria1004";
+    const STORAGE_KEY = "parish-schedule-2026-v1";
+
+    const DEFAULT_ROWS = [
+      { date: "2026-09-05", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-09-12", commentary: "한비", reading1: "은지", reading2: "규민", accompaniment: "준범", drums: "민규" },
+      { date: "2026-09-18", commentary: "한비", reading1: "은지", reading2: "현영", accompaniment: "준범", drums: "민규" },
+      { date: "2026-09-26", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-10-04", commentary: "혜영", reading1: "한비", reading2: "규민", accompaniment: "현영", drums: "민규" },
+      { date: "2026-10-11", commentary: "한비", reading1: "재현", reading2: "윤호", accompaniment: "민규", drums: "준범" },
+      { date: "2026-10-18", commentary: "은지", reading1: "경은", reading2: "규민", accompaniment: "준범", drums: "민규" },
+      { date: "2026-10-25", commentary: "재현", reading1: "은지", reading2: "주하", accompaniment: "현영", drums: "준범" },
+      { date: "2026-11-01", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-11-08", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-11-15", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-11-22", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-11-29", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-12-06", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-12-13", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-12-20", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" },
+      { date: "2026-12-27", commentary: "", reading1: "", reading2: "", accompaniment: "", drums: "" }
+    ];
+
+    const fields = [
+      ["commentary", "해설"],
+      ["reading1", "1독서"],
+      ["reading2", "2독서"],
+      ["accompaniment", "반주"],
+      ["drums", "드럼"]
+    ];
+
+    const state = {
+      rows: loadRows(),
+      editing: false,
+      draft: []
+    };
+
+    const el = {
+      body: document.getElementById("scheduleBody"),
+      editBtn: document.getElementById("editBtn"),
+      editActions: document.getElementById("editActions"),
+      addRowBtn: document.getElementById("addRowBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      cancelBtn: document.getElementById("cancelBtn"),
+      saveBtn: document.getElementById("saveBtn"),
+      notice: document.getElementById("notice"),
+      savedAt: document.getElementById("savedAt"),
+      dialog: document.getElementById("passwordDialog"),
+      passwordForm: document.getElementById("passwordForm"),
+      passwordInput: document.getElementById("passwordInput"),
+      passwordError: document.getElementById("passwordError"),
+      dialogCancelBtn: document.getElementById("dialogCancelBtn")
+    };
+
+    function cloneRows(rows) {
+      return rows.map(row => ({ ...row }));
+    }
+
+    function loadRows() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && Array.isArray(saved.rows)) {
+          return saved.rows;
+        }
+      } catch (_) {}
+      return cloneRows(DEFAULT_ROWS);
+    }
+
+    function todaySeoul() {
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(new Date());
+
+      const get = type => parts.find(p => p.type === type)?.value;
+      return get("year") + "-" + get("month") + "-" + get("day");
+    }
+
+    function isPast(date) {
+      return date < todaySeoul();
+    }
+
+    function displayDate(date) {
+      const parts = date.split("-");
+      return Number(parts[1]) + "/" + Number(parts[2]);
+    }
+
+    function setNotice(message) {
+      el.notice.textContent = message || "";
+      el.notice.classList.toggle("show", Boolean(message));
+    }
+
+    function updateSavedAt() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!saved?.savedAt) {
+          el.savedAt.textContent = "기본 일정";
+          return;
+        }
+        const text = new Intl.DateTimeFormat("ko-KR", {
+          timeZone: "Asia/Seoul",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        }).format(new Date(saved.savedAt));
+        el.savedAt.textContent = text + " 저장";
+      } catch (_) {
+        el.savedAt.textContent = "기본 일정";
+      }
+    }
+
+    function renderView() {
+      el.body.innerHTML = "";
+      const rows = cloneRows(state.rows).sort((a, b) => a.date.localeCompare(b.date));
+
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.className = isPast(row.date) ? "past-row" : "future-row";
+
+        const dateTd = document.createElement("td");
+        const dateMain = document.createElement("span");
+        const stateText = document.createElement("span");
+
+        dateMain.className = "date-main";
+        dateMain.textContent = displayDate(row.date);
+
+        stateText.className = "state";
+        stateText.textContent = isPast(row.date) ? "완료" : "예정";
+
+        dateTd.append(dateMain, stateText);
+        tr.appendChild(dateTd);
+
+        fields.forEach(([key]) => {
+          const td = document.createElement("td");
+          const value = (row[key] || "").trim();
+          if (value) {
+            td.textContent = value;
+          } else {
+            const empty = document.createElement("span");
+            empty.className = "empty";
+            empty.textContent = "미정";
+            td.appendChild(empty);
+          }
+          tr.appendChild(td);
+        });
+
+        el.body.appendChild(tr);
+      });
+
+      el.editActions.classList.remove("show");
+      el.editBtn.hidden = false;
+      updateSavedAt();
+    }
+
+    function renderEdit() {
+      el.body.innerHTML = "";
+
+      state.draft.forEach((row, index) => {
+        const tr = document.createElement("tr");
+        tr.className = "edit-row";
+
+        const dateTd = document.createElement("td");
+        const dateInput = document.createElement("input");
+        dateInput.type = "date";
+        dateInput.className = "date-input";
+        dateInput.value = row.date;
+        dateInput.setAttribute("aria-label", "날짜");
+        dateInput.addEventListener("input", e => {
+          state.draft[index].date = e.target.value;
+        });
+        dateTd.appendChild(dateInput);
+
+        if (state.draft.length > 1) {
+          const del = document.createElement("button");
+          del.type = "button";
+          del.className = "delete-row";
+          del.textContent = "행 삭제";
+          del.addEventListener("click", () => {
+            state.draft.splice(index, 1);
+            renderEdit();
+          });
+          dateTd.appendChild(del);
+        }
+
+        tr.appendChild(dateTd);
+
+        fields.forEach(([key, label]) => {
+          const td = document.createElement("td");
+          const input = document.createElement("input");
+          input.type = "text";
+          input.className = "cell-input";
+          input.value = row[key] || "";
+          input.maxLength = 20;
+          input.placeholder = "미정";
+          input.setAttribute("aria-label", label);
+          input.addEventListener("input", e => {
+            state.draft[index][key] = e.target.value;
+          });
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+
+        el.body.appendChild(tr);
+      });
+
+      el.editActions.classList.add("show");
+      el.editBtn.hidden = true;
+    }
+
+    function validateRows(rows) {
+      if (!rows.length) return "일정이 하나 이상 필요합니다.";
+      if (rows.some(row => !/^\d{4}-\d{2}-\d{2}$/.test(row.date))) {
+        return "모든 행에 날짜를 입력하세요.";
+      }
+
+      const dates = rows.map(row => row.date);
+      if (new Set(dates).size !== dates.length) {
+        return "같은 날짜가 두 번 들어가 있습니다.";
+      }
+
+      return "";
+    }
+
+    el.editBtn.addEventListener("click", () => {
+      el.passwordInput.value = "";
+      el.passwordError.textContent = "";
+      el.dialog.showModal();
+      setTimeout(() => el.passwordInput.focus(), 30);
+    });
+
+    el.dialogCancelBtn.addEventListener("click", () => {
+      el.dialog.close();
+    });
+
+    el.passwordForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (el.passwordInput.value !== PASSWORD) {
+        el.passwordError.textContent = "비밀번호가 맞지 않습니다.";
+        el.passwordInput.select();
+        return;
+      }
+
+      el.dialog.close();
+      state.editing = true;
+      state.draft = cloneRows(state.rows);
+      setNotice("");
+      renderEdit();
+    });
+
+    el.addRowBtn.addEventListener("click", () => {
+      const last = state.draft[state.draft.length - 1];
+      let next = new Date((last?.date || todaySeoul()) + "T12:00:00+09:00");
+      next.setDate(next.getDate() + 7);
+
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+      }).formatToParts(next);
+
+      const get = type => parts.find(p => p.type === type)?.value;
+
+      state.draft.push({
+        date: get("year") + "-" + get("month") + "-" + get("day"),
+        commentary: "",
+        reading1: "",
+        reading2: "",
+        accompaniment: "",
+        drums: ""
+      });
+
+      renderEdit();
+      el.body.lastElementChild?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    el.cancelBtn.addEventListener("click", () => {
+      state.editing = false;
+      state.draft = [];
+      setNotice("");
+      renderView();
+    });
+
+    el.saveBtn.addEventListener("click", () => {
+      const error = validateRows(state.draft);
+      if (error) {
+        setNotice(error);
+        return;
+      }
+
+      state.rows = cloneRows(state.draft).sort((a, b) => a.date.localeCompare(b.date));
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          savedAt: new Date().toISOString(),
+          rows: state.rows
+        })
+      );
+
+      state.editing = false;
+      state.draft = [];
+      renderView();
+      setNotice("이 브라우저에 일정이 저장되었습니다.");
+    });
+
+    el.resetBtn.addEventListener("click", () => {
+      if (!confirm("현재 브라우저에 저장된 수정 내용을 지우고 기본 일정으로 되돌릴까요?")) return;
+
+      localStorage.removeItem(STORAGE_KEY);
+      state.rows = cloneRows(DEFAULT_ROWS);
+      state.draft = cloneRows(DEFAULT_ROWS);
+      renderEdit();
+      setNotice("기본 일정으로 복원했습니다. 저장 버튼을 누르면 적용됩니다.");
+    });
+
+    renderView();
+  </script>
+</body>
+</html>
