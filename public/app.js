@@ -65,7 +65,15 @@ function escapeText(value) {
 function render() {
   if (!state.schedule) return;
 
+  let previousMonth = null;
+
   body.innerHTML = state.schedule.rows.map((row, rowIndex) => {
+    const month = Number(row.date.split("-")[1]);
+    const monthDivider = month !== previousMonth
+      ? `<tr class="month-divider"><td colspan="6"><span>${month}월</span></td></tr>`
+      : "";
+    previousMonth = month;
+
     const status = rowStatus(row.date);
     const valueCells = fields.map(field => {
       const value = row[field] || "";
@@ -78,6 +86,7 @@ function render() {
     }).join("");
 
     return `
+      ${monthDivider}
       <tr class="${status}">
         <td class="date-cell"><span class="date-line"><i class="row-dot" aria-hidden="true"></i>${formatDate(row.date)}</span></td>
         ${valueCells}
