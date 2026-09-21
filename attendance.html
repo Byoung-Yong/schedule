@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f9fd" />
+  <title>출석부</title>
+  <style>
+    :root {
+      --bg: #f7f9fd;
+      --surface: #ffffff;
+      --surface-soft: #f8faff;
+      --text: #17223f;
+      --muted: #74809a;
+      --line: #dbe3f0;
+      --line-strong: #bccbe2;
+      --accent: #2f76f3;
+      --shadow: 0 14px 36px rgba(54, 84, 138, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo",
+        "Malgun Gothic", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      width: min(1200px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 28px 0 40px;
+    }
+
+    .header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      letter-spacing: -0.04em;
+    }
+
+    .table-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .table-scroll {
+      overflow: auto;
+      max-height: calc(100vh - 110px);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 1040px;
+      width: max-content;
+      font-variant-numeric: tabular-nums;
+    }
+
+    th, td {
+      min-width: 48px;
+      height: 48px;
+      padding: 8px 6px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      white-space: nowrap;
+      background: var(--surface);
+      font-size: 0.88rem;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      color: #64718d;
+      background: var(--surface-soft);
+      font-weight: 800;
+    }
+
+    thead th:nth-child(1),
+    tbody td:nth-child(1) {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      width: 48px;
+      min-width: 48px;
+      background: var(--surface);
+    }
+
+    thead th:nth-child(2),
+    tbody td:nth-child(2) {
+      position: sticky;
+      left: 48px;
+      z-index: 3;
+      width: 92px;
+      min-width: 92px;
+      background: var(--surface);
+    }
+
+    thead th:nth-child(3),
+    tbody td:nth-child(3) {
+      position: sticky;
+      left: 140px;
+      z-index: 3;
+      width: 100px;
+      min-width: 100px;
+      background: var(--surface);
+      box-shadow: 6px 0 10px rgba(34, 55, 96, 0.04);
+    }
+
+    thead th:nth-child(-n+3) {
+      z-index: 6;
+      background: #f4f7fc;
+    }
+
+    tbody tr:last-child td { border-bottom: 0; }
+
+    td.name,
+    td.baptismal {
+      text-align: left;
+      font-weight: 650;
+    }
+
+    .date-head {
+      min-width: 52px;
+      color: var(--text);
+    }
+
+    .date-head span {
+      display: block;
+      line-height: 1.2;
+    }
+
+    .date-head .month {
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .date-head .day {
+      margin-top: 2px;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .month-start {
+      border-left: 2px solid var(--line-strong) !important;
+    }
+
+    .attendance-cell {
+      min-width: 52px;
+      background: #fff;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: 100%;
+        padding: 12px 0 0;
+      }
+
+      .header {
+        padding: 0 12px;
+        margin-bottom: 10px;
+      }
+
+      h1 {
+        font-size: 1.45rem;
+      }
+
+      .table-card {
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+      }
+
+      .table-scroll {
+        max-height: calc(100dvh - 58px);
+      }
+
+      th, td {
+        height: 44px;
+        padding: 6px 4px;
+        font-size: 0.78rem;
+      }
+
+      thead th:nth-child(2),
+      tbody td:nth-child(2) {
+        width: 78px;
+        min-width: 78px;
+      }
+
+      thead th:nth-child(3),
+      tbody td:nth-child(3) {
+        left: 126px;
+        width: 84px;
+        min-width: 84px;
+      }
+
+      .date-head,
+      .attendance-cell {
+        min-width: 46px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <h1>출석부</h1>
+    </header>
+
+    <section class="table-card">
+      <div class="table-scroll">
+        <table aria-label="출석부">
+          <thead>
+            <tr>
+              <th scope="col">번호</th>
+              <th scope="col">성명</th>
+              <th scope="col">세례명</th>
+              <th class="date-head month-start" scope="col"><span class="month">9월</span><span class="day">9/5</span></th>
+              <th class="date-head" scope="col"><span class="month">9월</span><span class="day">9/12</span></th>
+              <th class="date-head" scope="col"><span class="month">9월</span><span class="day">9/18</span></th>
+              <th class="date-head" scope="col"><span class="month">9월</span><span class="day">9/26</span></th>
+              <th class="date-head month-start" scope="col"><span class="month">10월</span><span class="day">10/4</span></th>
+              <th class="date-head" scope="col"><span class="month">10월</span><span class="day">10/11</span></th>
+              <th class="date-head" scope="col"><span class="month">10월</span><span class="day">10/18</span></th>
+              <th class="date-head" scope="col"><span class="month">10월</span><span class="day">10/25</span></th>
+              <th class="date-head month-start" scope="col"><span class="month">11월</span><span class="day">11/1</span></th>
+              <th class="date-head" scope="col"><span class="month">11월</span><span class="day">11/8</span></th>
+              <th class="date-head" scope="col"><span class="month">11월</span><span class="day">11/15</span></th>
+              <th class="date-head" scope="col"><span class="month">11월</span><span class="day">11/22</span></th>
+              <th class="date-head month-start" scope="col"><span class="month">12월</span><span class="day">12/6</span></th>
+              <th class="date-head" scope="col"><span class="month">12월</span><span class="day">12/13</span></th>
+              <th class="date-head" scope="col"><span class="month">12월</span><span class="day">12/20</span></th>
+              <th class="date-head" scope="col"><span class="month">12월</span><span class="day">12/27</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td><td class="name">정서율</td><td class="baptismal">마테오</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>2</td><td class="name"></td><td class="baptismal"></td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>3</td><td class="name"></td><td class="baptismal">엘리사벳</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>4</td><td class="name">김세은</td><td class="baptismal"></td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>5</td><td class="name"></td><td class="baptismal">로사</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>6</td><td class="name">박주아</td><td class="baptismal">소피아</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>7</td><td class="name">김재현</td><td class="baptismal">로베르토</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>8</td><td class="name"></td><td class="baptismal">프란치스코</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>9</td><td class="name">최한비</td><td class="baptismal">시메온</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>10</td><td class="name">최혜윤</td><td class="baptismal">세베로</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>11</td><td class="name">김은지</td><td class="baptismal">라파엘라</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+            <tr>
+              <td>12</td><td class="name">이윤진</td><td class="baptismal">베드로</td>
+              <td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td><td class="attendance-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
