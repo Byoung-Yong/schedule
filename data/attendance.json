@@ -25,8 +25,8 @@
       "baptismal": "마테오",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -44,12 +44,12 @@
     },
     {
       "number": 2,
-      "name": "",
-      "baptismal": "",
+      "name": "김규민",
+      "baptismal": "비안네",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -67,12 +67,12 @@
     },
     {
       "number": 3,
-      "name": "",
+      "name": "김경은",
       "baptismal": "엘리사벳",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "green",
         "",
         "",
         "",
@@ -94,8 +94,8 @@
       "baptismal": "",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -113,12 +113,12 @@
     },
     {
       "number": 5,
-      "name": "",
+      "name": "이현영",
       "baptismal": "로사",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "green",
         "",
         "",
         "",
@@ -140,8 +140,8 @@
       "baptismal": "소피아",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -163,8 +163,8 @@
       "baptismal": "로베르토",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -182,12 +182,12 @@
     },
     {
       "number": 8,
-      "name": "",
+      "name": "양윤호",
       "baptismal": "프란치스코",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -209,8 +209,8 @@
       "baptismal": "시메온",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -232,8 +232,8 @@
       "baptismal": "세베로",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -255,8 +255,8 @@
       "baptismal": "라파엘라",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "green",
         "",
         "",
         "",
@@ -274,12 +274,12 @@
     },
     {
       "number": 12,
-      "name": "이윤진",
+      "name": "이윤준",
       "baptismal": "베드로",
       "attendance": [
         "",
-        "",
-        "",
+        "green",
+        "yellow",
         "",
         "",
         "",
@@ -296,5 +296,5 @@
       ]
     }
   ],
-  "updatedAt": null
+  "updatedAt": "2026-09-21T09:00:00.000Z"
 }
