@@ -486,3 +486,33 @@ tr.today td {
     scroll-behavior: auto !important;
   }
 }
+
+
+.month-divider td {
+  height: 28px;
+  padding: 0 12px;
+  border-top: 2px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+  color: #65718c;
+  background: #f3f6fb;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.month-divider:first-child td {
+  border-top: 0;
+}
+
+.month-divider span {
+  display: inline-block;
+}
+
+@media (max-width: 700px) {
+  .month-divider td {
+    height: 24px;
+    padding: 0 7px;
+    background: #f3f6fb;
+    font-size: 0.7rem;
+  }
+}
