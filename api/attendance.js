@@ -1,14 +1,32 @@
+import { getCache } from "@vercel/functions";
+
 const OWNER = "Byoung-Yong";
 const REPO = "schedule";
 const BRANCH = "main";
 const TOKEN = process.env.GITHUB_TOKEN;
 const EDIT_PASSWORD = process.env.EDIT_PASSWORD || "maria1004";
 const DATA_PATH = "data/attendance.json";
+const CACHE_KEY = "church-roster:attendance:v1";
 
 function send(res, status, body) {
   res.status(status).setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   res.end(JSON.stringify(body));
+}
+
+async function readCachedAttendance() {
+  try {
+    return await getCache().get(CACHE_KEY);
+  } catch (error) {
+    console.error("Runtime cache read failed:", error);
+    return null;
+  }
+}
+
+async function writeCachedAttendance(data) {
+  await getCache().set(CACHE_KEY, data, {
+    tags: ["church-roster", "attendance"]
+  });
 }
 
 function validateAttendance(data) {
@@ -73,26 +91,32 @@ async function readAttendance() {
 }
 
 async function writeAttendance(data, sha) {
-  const updated = { ...data, updatedAt: new Date().toISOString() };
-
   await githubWrite(`contents/${DATA_PATH}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      message: `Update attendance ${updated.updatedAt}`,
-      content: Buffer.from(JSON.stringify(updated, null, 2) + "\n", "utf8").toString("base64"),
+      message: `Update attendance ${data.updatedAt}`,
+      content: Buffer.from(JSON.stringify(data, null, 2) + "\n", "utf8").toString("base64"),
       sha,
       branch: BRANCH
     })
   });
 
-  return updated;
+  return data;
 }
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
+      const cached = await readCachedAttendance();
+      if (cached) return send(res, 200, cached);
+
       const { data } = await readAttendance();
+      try {
+        await writeCachedAttendance(data);
+      } catch (error) {
+        console.error("Runtime cache seed failed:", error);
+      }
       return send(res, 200, data);
     } catch (error) {
       console.error(error);
@@ -111,7 +135,6 @@ export default async function handler(req, res) {
   }
 
   if (action === "verify") {
-    if (!TOKEN) return send(res, 503, { error: "GITHUB_TOKEN is not configured." });
     return send(res, 200, { ok: true });
   }
 
@@ -119,13 +142,23 @@ export default async function handler(req, res) {
     return send(res, 400, { error: "Invalid attendance data." });
   }
 
-  if (!TOKEN) {
-    return send(res, 503, { error: "GITHUB_TOKEN is not configured." });
-  }
-
   try {
-    const { sha } = await readAttendance();
-    const updated = await writeAttendance(attendance, sha);
+    const updated = {
+      ...attendance,
+      updatedAt: new Date().toISOString()
+    };
+
+    await writeCachedAttendance(updated);
+
+    if (TOKEN) {
+      try {
+        const { sha } = await readAttendance();
+        await writeAttendance(updated, sha);
+      } catch (error) {
+        console.error("GitHub backup failed:", error);
+      }
+    }
+
     return send(res, 200, updated);
   } catch (error) {
     console.error(error);
