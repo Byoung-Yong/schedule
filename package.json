@@ -4,8 +4,5 @@
   "version": "1.0.0",
   "scripts": {
     "check": "node --check public/app.js && node --check api/schedule.js && node --check api/attendance.js"
-  },
-  "dependencies": {
-    "@vercel/functions": "3.9.9"
   }
 }
