@@ -1,12 +1,9 @@
-import { getCache } from "@vercel/functions";
-
 const OWNER = "Byoung-Yong";
 const REPO = "schedule";
 const BRANCH = "main";
 const TOKEN = process.env.GITHUB_TOKEN;
 const EDIT_PASSWORD = process.env.EDIT_PASSWORD || "maria1004";
 const DATA_PATH = "data/attendance.json";
-const CACHE_KEY = "church-roster:attendance:v1";
 
 function send(res, status, body) {
   res.status(status).setHeader("Content-Type", "application/json; charset=utf-8");
@@ -14,20 +11,6 @@ function send(res, status, body) {
   res.end(JSON.stringify(body));
 }
 
-async function readCachedAttendance() {
-  try {
-    return await getCache().get(CACHE_KEY);
-  } catch (error) {
-    console.error("Runtime cache read failed:", error);
-    return null;
-  }
-}
-
-async function writeCachedAttendance(data) {
-  await getCache().set(CACHE_KEY, data, {
-    tags: ["church-roster", "attendance"]
-  });
-}
 
 function validateAttendance(data) {
   if (!data || data.year !== 2026 || !Array.isArray(data.dates) || !Array.isArray(data.rows)) return false;
@@ -108,15 +91,7 @@ async function writeAttendance(data, sha) {
 export default async function handler(req, res) {
   if (req.method === "GET") {
     try {
-      const cached = await readCachedAttendance();
-      if (cached) return send(res, 200, cached);
-
       const { data } = await readAttendance();
-      try {
-        await writeCachedAttendance(data);
-      } catch (error) {
-        console.error("Runtime cache seed failed:", error);
-      }
       return send(res, 200, data);
     } catch (error) {
       console.error(error);
@@ -148,17 +123,8 @@ export default async function handler(req, res) {
       updatedAt: new Date().toISOString()
     };
 
-    await writeCachedAttendance(updated);
-
-    if (TOKEN) {
-      try {
-        const { sha } = await readAttendance();
-        await writeAttendance(updated, sha);
-      } catch (error) {
-        console.error("GitHub backup failed:", error);
-      }
-    }
-
+    const { sha } = await readAttendance();
+    await writeAttendance(updated, sha);
     return send(res, 200, updated);
   } catch (error) {
     console.error(error);
